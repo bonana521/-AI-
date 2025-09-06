@@ -14,7 +14,9 @@
       "Bash(git push:*)",
       "Bash(ping:*)",
       "Bash(git tag:*)",
-      "Bash(gh repo view:*)"
+      "Bash(gh repo view:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
