@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兽娘助手 - 兽耳小可爱</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 漂浮装饰元素 -->
+    <div class="floating-element" style="top: 10%; left: 5%; animation-delay: 0s;"></div>
+    <div class="floating-element" style="top: 20%; right: 10%; animation-delay: 2s;"></div>
+    <div class="floating-element" style="top: 60%; left: 8%; animation-delay: 4s;"></div>
+    <div class="floating-element" style="top: 80%; right: 15%; animation-delay: 6s;"></div>
+    <div class="floating-element" style="top: 40%; left: 12%; animation-delay: 1s;"></div>
+    
+    <!-- 聊天窗口容器 -->
+    <div class="chat-window">
+        <!-- 聊天窗口头部 -->
+        <div class="chat-window-header">
+            <div class="character-info">
+                <div class="avatar" id="avatar">
+                    <img src="avatar.png" alt="琪琪" class="avatar-img">
+                    <div class="status-indicator online"></div>
+                </div>
+                <div class="character-details">
+                    <h2>琪琪 🐱</h2>
+                    <p>在线 - 才不是在等你呢！</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="minimize-btn">─</button>
+                <button class="close-btn">✕</button>
+            </div>
+        </div>
+
+        <!-- 聊天消息区域 -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="message assistant">
+                <div class="message-avatar">
+                    <img src="avatar.png" alt="琪琪" class="mini-avatar-img">
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        喂！你终于来了啊！我...我才没有在等你呢！只是...只是刚好在线而已！哼！(￣^￣)
+                    </div>
+                    <div class="message-time">刚刚</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="chat-input-area">
+            <div class="input-container">
+                <div class="input-actions">
+                    <button class="input-btn" title="表情">😊</button>
+                    <button class="input-btn" title="图片">📷</button>
+                    <button class="input-btn" title="语音">🎤</button>
+                </div>
+                <input type="text" id="userInput" placeholder="和琪琪聊天吧~ (｡♥‿♥｡)" maxlength="500">
+                <button id="sendBtn" class="send-btn">发送 ✨</button>
+            </div>
+            
+            <!-- 快捷操作 -->
+            <div class="quick-actions">
+                <button class="action-btn" data-action="greet">👋 打个招呼吧</button>
+                <button class="action-btn" data-action="compliment">💕 夸夸琪琪</button>
+                <button class="action-btn" data-action="play">🎮 一起玩耍</button>
+                <button class="action-btn" data-action="comfort">🤗 需要安慰</button>
+                <button class="action-btn" data-action="food">🍴 小鱼干时间</button>
+                <button class="action-btn" data-action="sleep">😴 想睡觉了</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 状态显示区域 -->
+    <div class="status-bar">
+        <div class="status-info">
+            <span class="mood-status">心情: 才不是开心呢！ 😤</span>
+            <span class="energy-status">体力: 才不是充满呢！ 🔋</span>
+        </div>
+        <div class="typing-indicator" id="typingIndicator" style="display: none;">
+            <span></span>
+            <span></span>
+            <span></span>
+            琪琪才不是在输入呢...
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

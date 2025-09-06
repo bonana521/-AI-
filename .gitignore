@@ -1,0 +1,66 @@
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志文件
+*.log
+*.log.*
+
+# 临时文件
+*.tmp
+*.temp
+
+# 编辑器文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 缓存文件
+node_modules/
+.cache/
+
+# 构建输出
+dist/
+build/
+
+# 环境文件
+.env
+.env.local
+.env.*.local
+
+# 操作系统生成的文件
+.DS_Store
+Desktop.ini
+
+# 测试覆盖率报告
+coverage/
+.nyc_output
+
+# 依赖目录
+jspm_packages/
+
+# 可选的npm缓存目录
+.npm
+
+# 可选的eslint缓存
+.eslintcache
+
+# 微软的TypeScript缓存
+*.tsbuildinfo
+
+# 可选的REPL历史
+.node_repl_history
+
+# 输出目录
+out/
+build/
+
+# 自动生成的文件
+*.min.js
+*.min.css
+
+# 包管理器锁文件
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
