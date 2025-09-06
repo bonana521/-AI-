@@ -205,3 +205,5 @@ kawaii-beastgirl-assistant/
 
 **🔗 项目地址：** https://github.com/bonana521/-AI-
 **🌐 在线体验：** https://bonana521.github.io/-AI-/
+
+🤖 由 [Claude Code](https://claude.ai/code) 协助生成
