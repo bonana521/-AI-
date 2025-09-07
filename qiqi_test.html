@@ -14,6 +14,9 @@
     <div class="floating-element" style="top: 80%; right: 15%; animation-delay: 6s;"></div>
     <div class="floating-element" style="top: 40%; left: 12%; animation-delay: 1s;"></div>
     
+    <!-- 爱心粒子特效容器 -->
+    <div id="heartParticles"></div>
+    
     <!-- 聊天窗口容器 -->
     <div class="chat-window">
         <!-- 聊天窗口头部 -->
@@ -128,6 +131,73 @@
                 <button class="action-btn" data-action="catFact">🐱 猫咪知识</button>
                 <button class="action-btn" data-action="catImage">🐱 猫咪图片</button>
                 <button class="action-btn" id="videoCallBtn">📹 视频通话</button>
+                <button class="action-btn" id="gameBtn">🎮 同玩模式</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏窗口 -->
+    <div class="game-window" id="gameWindow" style="display: none;">
+        <div class="game-header">
+            <div class="game-info">
+                <div class="game-avatar">
+                    <img src="avatar_qiqi.png" alt="琪琪" class="game-avatar-img">
+                    <div class="status-indicator online"></div>
+                </div>
+                <div class="game-details">
+                    <h3>琪琪陪玩 🐱</h3>
+                    <p>主人加油！琪琪给你加油打气！</p>
+                </div>
+            </div>
+            <div class="game-controls">
+                <button class="game-control-btn" id="gameMinimizeBtn" title="最小化">─</button>
+                <button class="game-control-btn" id="gameCloseBtn" title="关闭">✕</button>
+            </div>
+        </div>
+        
+        <!-- 琪琪消息区域 -->
+        <div class="game-chat-area">
+            <div class="game-messages" id="gameMessages">
+                <div class="game-message qiqi">
+                    <div class="game-message-avatar">
+                        <img src="avatar_qiqi.png" alt="琪琪" class="game-mini-avatar">
+                    </div>
+                    <div class="game-message-content">
+                        <div class="game-message-bubble">
+                            哼！主人终于想和琪琪一起玩游戏啦！我...我才没有特意等你呢！只是刚好也想玩而已！(≧▽≦)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-content">
+            <iframe 
+                id="gameFrame"
+                src="https://bonana521.github.io/2048-game/games_home.html" 
+                frameborder="0" 
+                allowfullscreen>
+            </iframe>
+        </div>
+        
+        <div class="game-footer">
+            <div class="game-actions">
+                <button class="game-action-btn" data-game="2048">🔢 2048</button>
+                <button class="game-action-btn" data-game="pacman">🟡 吃豆人</button>
+                <button class="game-action-btn" data-game="snake">🐍 贪吃蛇</button>
+                <button class="game-action-btn" data-game="life">🧬 生命游戏</button>
+            </div>
+            
+            <!-- 窗口大小控制 -->
+            <div class="window-size-control">
+                <div class="size-control-title">窗口调整:</div>
+                <div class="size-options">
+                    <button class="size-btn" id="resizeBtn" title="拖拽调整大小">🔧</button>
+                    <button class="size-btn" id="resetSizeBtn" title="重置大小">🔄</button>
+                </div>
+                <div class="size-info">
+                    <span id="windowSizeInfo">768 × 1024</span>
+                </div>
             </div>
         </div>
     </div>

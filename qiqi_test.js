@@ -12,6 +12,17 @@ class KawaiiBeastgirlAssistant {
         this.musicPlaying = false;
         this.musicVolume = 0.3;
         
+        // 爱心粒子特效
+        this.heartParticles = [];
+        this.heartContainer = null;
+        
+        // 游戏窗口控制
+        this.gameWindow = null;
+        this.gameFrame = null;
+        this.gameMessages = null;
+        this.currentGame = null;
+        this.gameMessageInterval = null;
+        
         // 智能对话增强系统
         this.conversationHistory = [];
         this.contextMemory = [];
@@ -542,6 +553,20 @@ class KawaiiBeastgirlAssistant {
         // 视频通话事件监听
         videoCallBtn.addEventListener('click', () => this.startVideoCall());
         endCallBtn.addEventListener('click', () => this.endVideoCall());
+        
+        // 游戏窗口事件监听
+        const gameBtn = document.getElementById('gameBtn');
+        const gameMinimizeBtn = document.getElementById('gameMinimizeBtn');
+        const gameCloseBtn = document.getElementById('gameCloseBtn');
+        const gameActionBtns = document.querySelectorAll('.game-action-btn');
+        
+        gameBtn.addEventListener('click', () => this.startGame());
+        gameMinimizeBtn.addEventListener('click', () => this.minimizeGame());
+        gameCloseBtn.addEventListener('click', () => this.closeGame());
+        
+        gameActionBtns.forEach(btn => {
+            btn.addEventListener('click', () => this.loadGame(btn.dataset.game));
+        });
         playPauseBtn.addEventListener('click', () => this.togglePlayPause());
         volumeBtn.addEventListener('click', () => this.toggleVolume());
         progressBar.addEventListener('click', (e) => this.seekVideo(e));
@@ -566,6 +591,9 @@ class KawaiiBeastgirlAssistant {
         
         // 初始化背景音乐
         this.initBackgroundMusic();
+        this.initHeartParticles();
+        this.initGameWindow();
+        this.initWindowSizeControl();
     }
 
     sendMessage() {
@@ -1389,6 +1417,454 @@ class KawaiiBeastgirlAssistant {
             }
             this.bgMusic.volume = currentVolume;
         }, 200);
+    }
+
+    // 爱心粒子特效方法
+    initHeartParticles() {
+        this.heartContainer = document.getElementById('heartParticles');
+        if (!this.heartContainer) return;
+        
+        // 开始生成爱心粒子
+        this.startHeartParticles();
+        
+        // 每30秒清理一次已经消失的粒子，防止内存泄漏
+        setInterval(() => {
+            this.cleanupHeartParticles();
+        }, 30000);
+    }
+    
+    startHeartParticles() {
+        // 立即生成第一批粒子
+        this.generateHeartParticles();
+        
+        // 定期生成新的爱心粒子
+        setInterval(() => {
+            this.generateHeartParticles();
+        }, 2000);
+    }
+    
+    generateHeartParticles() {
+        if (!this.heartContainer) return;
+        
+        // 每次生成1-3个随机粒子
+        const particleCount = Math.floor(Math.random() * 3) + 1;
+        
+        for (let i = 0; i < particleCount; i++) {
+            setTimeout(() => {
+                this.createHeartParticle();
+            }, i * 500); // 错开生成时间
+        }
+    }
+    
+    createHeartParticle() {
+        if (!this.heartContainer) return;
+        
+        const particle = document.createElement('div');
+        particle.className = 'heart-particle';
+        
+        // 随机选择爱心符号
+        const heartSymbols = ['♡', '♥', '💕', '💖', '💗', '💓', '💘', '💝'];
+        particle.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+        
+        // 随机位置
+        const startX = Math.random() * window.innerWidth;
+        particle.style.left = startX + 'px';
+        
+        // 随机大小样式
+        const sizeClasses = ['', 'large', 'small', 'sparkle', 'pulse'];
+        const randomSize = sizeClasses[Math.floor(Math.random() * sizeClasses.length)];
+        if (randomSize) {
+            particle.classList.add(randomSize);
+        }
+        
+        // 随机动画延迟
+        particle.style.animationDelay = Math.random() * 2 + 's';
+        
+        // 添加到容器
+        this.heartContainer.appendChild(particle);
+        this.heartParticles.push(particle);
+        
+        // 动画结束后移除粒子
+        const animationDuration = parseFloat(getComputedStyle(particle).animationDuration) * 1000;
+        setTimeout(() => {
+            this.removeHeartParticle(particle);
+        }, animationDuration);
+    }
+    
+    removeHeartParticle(particle) {
+        if (!particle || !particle.parentNode) return;
+        
+        particle.parentNode.removeChild(particle);
+        const index = this.heartParticles.indexOf(particle);
+        if (index > -1) {
+            this.heartParticles.splice(index, 1);
+        }
+    }
+    
+    cleanupHeartParticles() {
+        // 清理已经从DOM中移除的粒子引用
+        this.heartParticles = this.heartParticles.filter(particle => {
+            return particle && particle.parentNode;
+        });
+        
+        // 如果粒子数量过多，移除最老的一些
+        if (this.heartParticles.length > 50) {
+            const toRemove = this.heartParticles.splice(0, this.heartParticles.length - 50);
+            toRemove.forEach(particle => {
+                if (particle && particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            });
+        }
+    }
+    
+    // 特殊效果：在特定位置爆发爱心
+    createHeartBurst(x, y, count = 8) {
+        if (!this.heartContainer) return;
+        
+        for (let i = 0; i < count; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'heart-particle sparkle';
+            particle.textContent = '💖';
+            
+            // 设置起始位置
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            
+            // 随机方向
+            const angle = (i / count) * Math.PI * 2;
+            const distance = 50 + Math.random() * 50;
+            const endX = x + Math.cos(angle) * distance;
+            const endY = y + Math.sin(angle) * distance;
+            
+            // 自定义动画
+            particle.style.animation = 'none';
+            particle.style.opacity = '1';
+            particle.style.transform = 'scale(1)';
+            
+            this.heartContainer.appendChild(particle);
+            
+            // 执行爆发动画
+            setTimeout(() => {
+                particle.style.transition = 'all 1s ease-out';
+                particle.style.opacity = '0';
+                particle.style.transform = `translate(${endX - x}px, ${endY - y}px) scale(0.5) rotate(360deg)`;
+            }, 10);
+            
+            // 清理
+            setTimeout(() => {
+                this.removeHeartParticle(particle);
+            }, 1000);
+        }
+    }
+
+    // 游戏窗口相关方法
+    initGameWindow() {
+        this.gameWindow = document.getElementById('gameWindow');
+        this.gameFrame = document.getElementById('gameFrame');
+        this.gameMessages = document.getElementById('gameMessages');
+        
+        if (!this.gameWindow || !this.gameFrame || !this.gameMessages) {
+            console.log('🎮 游戏窗口元素未找到');
+            return;
+        }
+        
+        console.log('🎮 游戏窗口初始化完成');
+    }
+    
+    startGame() {
+        if (!this.gameWindow) return;
+        
+        // 隐藏聊天界面，显示游戏界面
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInputArea = document.querySelector('.chat-input-area');
+        
+        if (chatMessages) chatMessages.style.display = 'none';
+        if (chatInputArea) chatInputArea.style.display = 'none';
+        
+        // 显示游戏窗口
+        this.gameWindow.style.display = 'flex';
+        
+        // 清空游戏消息区域
+        if (this.gameMessages) {
+            this.gameMessages.innerHTML = `
+                <div class="game-message qiqi">
+                    <div class="game-message-avatar">
+                        <img src="avatar_qiqi.png" alt="琪琪" class="game-mini-avatar">
+                    </div>
+                    <div class="game-message-content">
+                        <div class="game-message-bubble">
+                            哼！主人终于想和琪琪一起玩游戏啦！我...我才没有特意等你呢！只是刚好也想玩而已！(≧▽≦)
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 添加游戏开始消息
+        this.addMessage("哼！想和琪琪一起玩游戏吗？我...我才不是特意准备的呢！只是刚好有这些游戏而已！(≧▽≦)", 'assistant');
+        
+        // 开始游戏鼓励消息
+        this.startGameEncouragement();
+        
+        console.log('🎮 游戏窗口已打开');
+    }
+    
+    closeGame() {
+        if (!this.gameWindow) return;
+        
+        // 停止游戏鼓励消息
+        this.stopGameEncouragement();
+        
+        // 隐藏游戏窗口
+        this.gameWindow.style.display = 'none';
+        
+        // 显示聊天界面
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInputArea = document.querySelector('.chat-input-area');
+        
+        if (chatMessages) chatMessages.style.display = 'flex';
+        if (chatInputArea) chatInputArea.style.display = 'block';
+        
+        // 添加游戏结束消息
+        this.addMessage("游戏结束啦！下次再和主人一起玩吧！我...我才没有玩得很开心呢！(￣▽￣)", 'assistant');
+        
+        console.log('🎮 游戏窗口已关闭');
+    }
+    
+    minimizeGame() {
+        if (!this.gameWindow) return;
+        
+        // 停止游戏鼓励消息
+        this.stopGameEncouragement();
+        
+        // 简单的最小化效果 - 先隐藏，可以通过其他方式恢复
+        this.gameWindow.style.display = 'none';
+        
+        // 显示聊天界面
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInputArea = document.querySelector('.chat-input-area');
+        
+        if (chatMessages) chatMessages.style.display = 'flex';
+        if (chatInputArea) chatInputArea.style.display = 'block';
+        
+        // 添加最小化提示
+        this.addMessage("游戏最小化啦！点击🎮同玩模式可以继续哦！", 'assistant');
+        
+        console.log('🎮 游戏窗口已最小化');
+    }
+    
+    loadGame(gameType) {
+        if (!this.gameFrame) return;
+        
+        const gameUrls = {
+            '2048': 'https://bonana521.github.io/2048-game/2048.html',
+            'pacman': 'https://bonana521.github.io/2048-game/pacman.html',
+            'snake': 'https://bonana521.github.io/2048-game/snake.html',
+            'life': 'https://bonana521.github.io/2048-game/gameoflife.html'
+        };
+        
+        const gameNames = {
+            '2048': '2048数字游戏',
+            'pacman': '吃豆人游戏',
+            'snake': '贪吃蛇游戏',
+            'life': '康威生命游戏'
+        };
+        
+        const gameEncouragement = {
+            '2048': '琪琪知道主人很聪明的！一定可以合并出2048的！',
+            'pacman': '小心幽灵哦！琪琪会保护主人的！',
+            'snake': '让小蛇长得更长吧！琪琪给主人加油！',
+            'life': '生命的演化好神奇啊！主人和琪琪一起观察吧！'
+        };
+        
+        if (gameUrls[gameType]) {
+            this.currentGame = gameType;
+            this.gameFrame.src = gameUrls[gameType];
+            this.addMessage(`切换到${gameNames[gameType]}！加油哦，主人！💪`, 'assistant');
+            
+            // 添加游戏专属鼓励消息
+            this.addGameMessage(gameEncouragement[gameType]);
+            
+            // 重新开始游戏鼓励消息
+            this.startGameEncouragement();
+            
+            console.log(`🎮 加载游戏: ${gameNames[gameType]}`);
+        } else {
+            this.addMessage("唔...这个游戏好像还没准备好呢！(￣▽￣;)", 'assistant');
+        }
+    }
+    
+    // 游戏鼓励消息系统
+    startGameEncouragement() {
+        // 先停止之前的消息
+        this.stopGameEncouragement();
+        
+        // 立即发送第一条鼓励消息
+        this.sendRandomEncouragement();
+        
+        // 每30-60秒发送一次鼓励消息
+        this.gameMessageInterval = setInterval(() => {
+            this.sendRandomEncouragement();
+        }, Math.random() * 30000 + 30000); // 30-60秒随机
+    }
+    
+    stopGameEncouragement() {
+        if (this.gameMessageInterval) {
+            clearInterval(this.gameMessageInterval);
+            this.gameMessageInterval = null;
+        }
+    }
+    
+    sendRandomEncouragement() {
+        if (!this.currentGame) return;
+        
+        const encouragementMessages = {
+            '2048': [
+                "主人加油！琪琪相信你一定可以合并出更大的数字！💪",
+                "哇！主人的操作好厉害！琪琪都看呆了！(≧▽≦)",
+                "别着急慢慢来，琪琪会一直陪着主人的！",
+                "主人好聪明！这个游戏琪琪都玩不好呢！",
+                "快成功了！琪琪给主人加油打气！✨",
+                "主人是最棒的！琪琪为客人感到骄傲！💕",
+                "这个数字好大！主人的思维好灵活！",
+                "琪琪觉得主人一定可以达到2048的！"
+            ],
+            'pacman': [
+                "主人小心幽灵！琪琪会保护你的！👻",
+                "吃掉所有豆豆吧！琪琪给主人加油！",
+                "主人的反应好快！琪琪都看不过来了！",
+                "哇！主人好厉害！琪琪好崇拜你！",
+                "小心拐角！幽灵会突然出现的哦！",
+                "琪琪会为主人祈祷的！不要被幽灵抓到！",
+                "主人的操作好流畅！琪琪好佩服！",
+                "收集能量豆，可以反过来追幽灵哦！"
+            ],
+            'snake': [
+                "让小蛇长得更长吧！琪琪给主人加油！🐍",
+                "主人的控制好精准！琪琪都学不会呢！",
+                "小心不要撞到墙壁哦！琪琪会担心的！",
+                "哇！小蛇变得好长！主人好厉害！",
+                "琪琪觉得主人是最厉害的蛇蛇控制师！",
+                "收集更多食物吧！琪琪为主人加油！",
+                "主人的策略好棒！琪琪都看不懂呢！",
+                "小心不要撞到自己的尾巴哦！"
+            ],
+            'life': [
+                "生命的演化好神奇！主人和琪琪一起观察吧！🧬",
+                "哇！这个图案好漂亮！琪琪好喜欢！",
+                "主人觉得细胞的世界有趣吗？琪琪觉得好神奇！",
+                "看着生命演化，琪琪感觉好平静呢～",
+                "主人和琪琪一起探索生命的奥秘吧！",
+                "这个细胞自动机好聪明！琪琪都佩服！",
+                "生命的力量好伟大！琪琪好感动！",
+                "主人觉得哪个图案最漂亮？琪琪喜欢星星形的！"
+            ]
+        };
+        
+        const messages = encouragementMessages[this.currentGame];
+        if (messages && messages.length > 0) {
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            this.addGameMessage(randomMessage);
+        }
+    }
+    
+    addGameMessage(message) {
+        if (!this.gameMessages) return;
+        
+        // 检查是否已有琪琪的消息，如果有则替换
+        const existingMessage = this.gameMessages.querySelector('.game-message.qiqi');
+        
+        if (existingMessage) {
+            // 替换现有消息的内容
+            const messageBubble = existingMessage.querySelector('.game-message-bubble');
+            if (messageBubble) {
+                messageBubble.textContent = message;
+            }
+            
+            // 添加淡入淡出动画效果
+            existingMessage.style.animation = 'none';
+            existingMessage.offsetHeight; // 触发重排
+            existingMessage.style.animation = 'fadeIn 0.5s ease-in-out';
+        } else {
+            // 如果没有现有消息，则创建新消息
+            const messageElement = document.createElement('div');
+            messageElement.className = 'game-message qiqi';
+            messageElement.innerHTML = `
+                <div class="game-message-avatar">
+                    <img src="avatar_qiqi.png" alt="琪琪" class="game-mini-avatar">
+                </div>
+                <div class="game-message-content">
+                    <div class="game-message-bubble">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            
+            this.gameMessages.appendChild(messageElement);
+        }
+        
+        // 滚动到底部
+        this.gameMessages.scrollTop = this.gameMessages.scrollHeight;
+    }
+    
+    initWindowSizeControl() {
+        // 初始化窗口大小控制
+        const gameWindow = document.getElementById('gameWindow');
+        const resizeBtn = document.getElementById('resizeBtn');
+        const resetSizeBtn = document.getElementById('resetSizeBtn');
+        const windowSizeInfo = document.getElementById('windowSizeInfo');
+        
+        if (!gameWindow || !resizeBtn || !resetSizeBtn || !windowSizeInfo) return;
+        
+        // 默认尺寸
+        const defaultWidth = 768;
+        const defaultHeight = 1024;
+        
+        // 更新窗口尺寸显示
+        const updateSizeInfo = () => {
+            const rect = gameWindow.getBoundingClientRect();
+            windowSizeInfo.textContent = `${Math.round(rect.width)} × ${Math.round(rect.height)}`;
+        };
+        
+        // 重置窗口大小
+        const resetWindowSize = () => {
+            gameWindow.style.width = defaultWidth + 'px';
+            gameWindow.style.height = defaultHeight + 'px';
+            updateSizeInfo();
+            this.addGameMessage('哼！琪琪帮你重置到默认大小啦！');
+        };
+        
+        // 切换调整大小模式
+        const toggleResizeMode = () => {
+            const isCurrentlyResizable = gameWindow.style.resize === 'both';
+            
+            if (isCurrentlyResizable) {
+                gameWindow.style.resize = 'none';
+                gameWindow.style.overflow = 'hidden';
+                resizeBtn.classList.remove('active');
+                this.addGameMessage('哼！调整大小模式已关闭！');
+            } else {
+                gameWindow.style.resize = 'both';
+                gameWindow.style.overflow = 'auto';
+                resizeBtn.classList.add('active');
+                this.addGameMessage('哼！现在可以拖拽窗口边缘调整大小啦！');
+            }
+        };
+        
+        // 绑定按钮事件
+        resizeBtn.addEventListener('click', toggleResizeMode);
+        resetSizeBtn.addEventListener('click', resetWindowSize);
+        
+        // 监听窗口大小变化
+        const resizeObserver = new ResizeObserver(updateSizeInfo);
+        resizeObserver.observe(gameWindow);
+        
+        // 初始化尺寸显示
+        updateSizeInfo();
+        
+        // 初始设置为不可调整大小
+        gameWindow.style.resize = 'none';
     }
 }
 
