@@ -20,7 +20,20 @@
       "Bash(git checkout:*)",
       "Bash(git fetch:*)",
       "WebFetch(domain:catfact.ninja)",
-      "WebFetch(domain:zhuanlan.zhihu.com)"
+      "WebFetch(domain:zhuanlan.zhihu.com)",
+      "Bash(nslookup:*)",
+      "Bash(git config:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(git clone:*)",
+      "Bash(find:*)",
+      "Bash(cp:*)",
+      "WebFetch(domain:bonana521.github.io)",
+      "Bash(gh api:*)",
+      "Bash(git reset:*)",
+      "Bash(git pull:*)",
+      "Bash(git merge:*)",
+      "Bash(gh run list:*)",
+      "WebFetch(domain:bigmodel.cn)"
     ],
     "deny": [],
     "ask": []
