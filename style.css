@@ -746,6 +746,309 @@ body::before {
     }
 }
 
+/* 视频通话样式 */
+.video-call-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 240, 245, 0.98) 100%),
+        linear-gradient(45deg, rgba(255, 182, 193, 0.1) 0%, rgba(255, 218, 224, 0.1) 100%);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+}
+
+.video-call-header {
+    background: 
+        linear-gradient(135deg, #ff69b4 0%, #ff1493 50%, #c71585 100%),
+        linear-gradient(45deg, rgba(255, 182, 193, 0.3) 0%, rgba(255, 20, 147, 0.3) 100%);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px 20px 0 0;
+}
+
+.video-call-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.video-avatar {
+    position: relative;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 
+        0 4px 15px rgba(255, 182, 193, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    overflow: hidden;
+}
+
+.video-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.video-call-details h3 {
+    font-size: 16px;
+    margin-bottom: 2px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.video-call-details p {
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+.video-call-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.video-control-btn {
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-control-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.video-end-btn {
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 0, 0, 0.3);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-end-btn:hover {
+    background: rgba(255, 0, 0, 0.5);
+    transform: scale(1.1);
+}
+
+.video-call-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: 
+        radial-gradient(circle at 50% 50%, rgba(255, 182, 193, 0.05) 0%, transparent 70%);
+}
+
+.remote-video {
+    flex: 1;
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 15px;
+    background: #000;
+    box-shadow: 
+        0 10px 30px rgba(255, 182, 193, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.remote-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.remote-video:hover .video-overlay {
+    opacity: 1;
+}
+
+.video-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: white;
+}
+
+.video-play-pause {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-play-pause:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.video-progress {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    cursor: pointer;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff69b4, #ff1493);
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+.video-time {
+    font-size: 12px;
+    color: white;
+    min-width: 80px;
+}
+
+.video-volume {
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-volume:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.local-video {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 120px;
+    height: 90px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 
+        0 5px 15px rgba(0, 0, 0, 0.3),
+        0 2px 5px rgba(255, 182, 193, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.local-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.local-video-label {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+}
+
+.video-call-footer {
+    padding: 15px 20px;
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 240, 245, 0.2) 100%),
+        radial-gradient(circle at 50% 50%, rgba(255, 182, 193, 0.1) 0%, transparent 70%);
+    border-top: 1px solid rgba(255, 182, 193, 0.2);
+}
+
+.video-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.video-action-btn {
+    padding: 8px 14px;
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 240, 245, 0.8) 100%),
+        linear-gradient(45deg, rgba(255, 182, 193, 0.3) 0%, rgba(255, 218, 224, 0.3) 100%);
+    color: #d1477a;
+    border: 1px solid rgba(255, 182, 193, 0.3);
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    box-shadow: 
+        0 2px 8px rgba(255, 182, 193, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.video-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 4px 15px rgba(255, 182, 193, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    background: 
+        linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%),
+        linear-gradient(45deg, rgba(255, 182, 193, 0.4) 0%, rgba(255, 218, 224, 0.4) 100%);
+}
+
 @media (max-width: 480px) {
     .chat-window {
         width: 100%;
@@ -773,5 +1076,57 @@ body::before {
     
     .status-bar {
         display: none;
+    }
+    
+    .video-call-container {
+        border-radius: 0;
+    }
+    
+    .video-call-header {
+        border-radius: 0;
+        padding: 12px 15px;
+    }
+    
+    .video-avatar {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .video-call-details h3 {
+        font-size: 14px;
+    }
+    
+    .video-call-details p {
+        font-size: 10px;
+    }
+    
+    .remote-video {
+        margin: 10px;
+        border-radius: 10px;
+    }
+    
+    .local-video {
+        width: 80px;
+        height: 60px;
+        bottom: 80px;
+        right: 15px;
+    }
+    
+    .video-controls {
+        gap: 10px;
+    }
+    
+    .video-time {
+        font-size: 10px;
+        min-width: 60px;
+    }
+    
+    .video-actions {
+        gap: 6px;
+    }
+    
+    .video-action-btn {
+        padding: 6px 10px;
+        font-size: 11px;
     }
 }
