@@ -15,7 +15,9 @@
       "Bash(ping:*)",
       "Bash(git tag:*)",
       "Bash(git config:*)",
-      "Bash(git remote remove:*)"
+      "Bash(git remote remove:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": []
