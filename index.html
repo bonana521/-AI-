@@ -49,6 +49,64 @@
             </div>
         </div>
 
+        <!-- 视频通话区域 -->
+        <div class="video-call-container" id="videoCallContainer" style="display: none;">
+            <div class="video-call-header">
+                <div class="video-call-info">
+                    <div class="video-avatar">
+                        <img src="avatar.png" alt="琪琪" class="video-avatar-img">
+                        <div class="status-indicator online"></div>
+                    </div>
+                    <div class="video-call-details">
+                        <h3>琪琪 🐱</h3>
+                        <p>视频通话中... 才不是特意想见你呢！</p>
+                    </div>
+                </div>
+                <div class="video-call-actions">
+                    <button class="video-control-btn" id="muteBtn" title="静音">🎤</button>
+                    <button class="video-control-btn" id="videoBtn" title="视频">📹</button>
+                    <button class="video-control-btn" id="fullscreenBtn" title="全屏">⛶</button>
+                    <button class="video-end-btn" id="endCallBtn" title="结束通话">📞</button>
+                </div>
+            </div>
+            
+            <div class="video-call-content">
+                <div class="remote-video">
+                    <video id="qiqiVideo" autoplay muted loop>
+                        <source src="../qiqi.mp4" type="video/mp4">
+                        您的浏览器不支持视频播放。
+                    </video>
+                    <div class="video-overlay">
+                        <div class="video-controls">
+                            <button class="video-play-pause" id="playPauseBtn">▶️</button>
+                            <div class="video-progress">
+                                <div class="progress-bar" id="progressBar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                                <span class="video-time" id="videoTime">0:00 / 0:00</span>
+                            </div>
+                            <button class="video-volume" id="volumeBtn">🔊</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="local-video">
+                    <video id="localVideo" autoplay muted></video>
+                    <div class="local-video-label">你</div>
+                </div>
+            </div>
+            
+            <div class="video-call-footer">
+                <div class="video-actions">
+                    <button class="video-action-btn" data-action="wave">👋 挥手</button>
+                    <button class="video-action-btn" data-action="heart">💕 送心心</button>
+                    <button class="video-action-btn" data-action="blowkiss">😘 飞吻</button>
+                    <button class="video-action-btn" data-action="dance">🎵 跳舞</button>
+                    <button class="video-action-btn" data-action="sleep">😴 困了</button>
+                </div>
+            </div>
+        </div>
+
         <!-- 输入区域 -->
         <div class="chat-input-area">
             <div class="input-container">
@@ -69,6 +127,7 @@
                 <button class="action-btn" data-action="comfort">🤗 需要安慰</button>
                 <button class="action-btn" data-action="food">🍴 小鱼干时间</button>
                 <button class="action-btn" data-action="sleep">😴 想睡觉了</button>
+                <button class="action-btn" id="videoCallBtn">📹 视频通话</button>
             </div>
         </div>
     </div>

@@ -401,6 +401,15 @@ class KawaiiBeastgirlAssistant {
         const sendBtn = document.getElementById('sendBtn');
         const userInput = document.getElementById('userInput');
         const actionBtns = document.querySelectorAll('.action-btn');
+        const videoCallBtn = document.getElementById('videoCallBtn');
+        const endCallBtn = document.getElementById('endCallBtn');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const volumeBtn = document.getElementById('volumeBtn');
+        const progressBar = document.getElementById('progressBar');
+        const muteBtn = document.getElementById('muteBtn');
+        const videoBtn = document.getElementById('videoBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const videoActionBtns = document.querySelectorAll('.video-action-btn');
 
         sendBtn.addEventListener('click', () => this.sendMessage());
         userInput.addEventListener('keypress', (e) => {
@@ -410,6 +419,31 @@ class KawaiiBeastgirlAssistant {
         actionBtns.forEach(btn => {
             btn.addEventListener('click', () => this.handleAction(btn.dataset.action));
         });
+
+        // 视频通话事件监听
+        videoCallBtn.addEventListener('click', () => this.startVideoCall());
+        endCallBtn.addEventListener('click', () => this.endVideoCall());
+        playPauseBtn.addEventListener('click', () => this.togglePlayPause());
+        volumeBtn.addEventListener('click', () => this.toggleVolume());
+        progressBar.addEventListener('click', (e) => this.seekVideo(e));
+        muteBtn.addEventListener('click', () => this.toggleMute());
+        videoBtn.addEventListener('click', () => this.toggleVideo());
+        fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
+
+        videoActionBtns.forEach(btn => {
+            btn.addEventListener('click', () => this.handleVideoAction(btn.dataset.action));
+        });
+
+        // 视频事件监听
+        const qiqiVideo = document.getElementById('qiqiVideo');
+        if (qiqiVideo) {
+            qiqiVideo.addEventListener('loadedmetadata', () => this.updateVideoInfo());
+            qiqiVideo.addEventListener('timeupdate', () => this.updateProgress());
+            qiqiVideo.addEventListener('ended', () => this.onVideoEnded());
+        }
+
+        // 初始化本地视频
+        this.initLocalVideo();
     }
 
     sendMessage() {
@@ -523,6 +557,198 @@ class KawaiiBeastgirlAssistant {
     showSpeechBubble(text) {
         // 在聊天窗口中显示消息
         this.addMessage(text, 'assistant');
+    }
+
+    // 视频通话相关方法
+    startVideoCall() {
+        const videoCallContainer = document.getElementById('videoCallContainer');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInputArea = document.querySelector('.chat-input-area');
+        
+        // 隐藏聊天界面，显示视频界面
+        chatMessages.style.display = 'none';
+        chatInputArea.style.display = 'none';
+        videoCallContainer.style.display = 'flex';
+        
+        // 添加视频通话开始消息
+        this.addMessage("喂！主人，想和琪琪视频通话吗？我...我才不是特意想见你呢！只是...刚好想看看你！(≧▽≦)", 'assistant');
+        
+        // 尝试播放视频
+        const qiqiVideo = document.getElementById('qiqiVideo');
+        if (qiqiVideo) {
+            qiqiVideo.play().catch(e => {
+                console.log('视频播放需要用户交互:', e);
+            });
+        }
+    }
+
+    endVideoCall() {
+        const videoCallContainer = document.getElementById('videoCallContainer');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInputArea = document.querySelector('.chat-input-area');
+        
+        // 显示聊天界面，隐藏视频界面
+        chatMessages.style.display = 'flex';
+        chatInputArea.style.display = 'block';
+        videoCallContainer.style.display = 'none';
+        
+        // 添加视频通话结束消息
+        this.addMessage("哼！视频通话结束了啦！我...我才没有舍不得呢！只是...只是下次想再见到主人...(｡•́︿•̀｡)", 'assistant');
+        
+        // 暂停视频
+        const qiqiVideo = document.getElementById('qiqiVideo');
+        if (qiqiVideo) {
+            qiqiVideo.pause();
+        }
+    }
+
+    togglePlayPause() {
+        const qiqiVideo = document.getElementById('qiqiVideo');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        
+        if (qiqiVideo.paused) {
+            qiqiVideo.play();
+            playPauseBtn.textContent = '⏸️';
+        } else {
+            qiqiVideo.pause();
+            playPauseBtn.textContent = '▶️';
+        }
+    }
+
+    toggleVolume() {
+        const qiqiVideo = document.getElementById('qiqiVideo');
+        const volumeBtn = document.getElementById('volumeBtn');
+        
+        if (qiqiVideo.muted) {
+            qiqiVideo.muted = false;
+            volumeBtn.textContent = '🔊';
+        } else {
+            qiqiVideo.muted = true;
+            volumeBtn.textContent = '🔇';
+        }
+    }
+
+    toggleMute() {
+        const qiqiVideo = document.getElementById('qiqiVideo');
+        const muteBtn = document.getElementById('muteBtn');
+        
+        if (qiqiVideo.muted) {
+            qiqiVideo.muted = false;
+            muteBtn.textContent = '🎤';
+        } else {
+            qiqiVideo.muted = true;
+            muteBtn.textContent = '🎤❌';
+        }
+    }
+
+    toggleVideo() {
+        const qiqiVideo = document.getElementById('qiqiVideo');
+        const videoBtn = document.getElementById('videoBtn');
+        
+        if (qiqiVideo.paused) {
+            qiqiVideo.play();
+            videoBtn.textContent = '📹';
+        } else {
+            qiqiVideo.pause();
+            videoBtn.textContent = '📹❌';
+        }
+    }
+
+    toggleFullscreen() {
+        const videoCallContainer = document.getElementById('videoCallContainer');
+        
+        if (!document.fullscreenElement) {
+            videoCallContainer.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    seekVideo(e) {
+        const qiqiVideo = document.getElementById('qiqiVideo');
+        const progressBar = document.getElementById('progressBar');
+        const rect = progressBar.getBoundingClientRect();
+        const pos = (e.clientX - rect.left) / rect.width;
+        qiqiVideo.currentTime = pos * qiqiVideo.duration;
+    }
+
+    updateProgress() {
+        const qiqiVideo = document.getElementById('qiqiVideo');
+        const progressFill = document.getElementById('progressFill');
+        const videoTime = document.getElementById('videoTime');
+        
+        if (qiqiVideo.duration) {
+            const progress = (qiqiVideo.currentTime / qiqiVideo.duration) * 100;
+            progressFill.style.width = progress + '%';
+            
+            const currentMinutes = Math.floor(qiqiVideo.currentTime / 60);
+            const currentSeconds = Math.floor(qiqiVideo.currentTime % 60);
+            const durationMinutes = Math.floor(qiqiVideo.duration / 60);
+            const durationSeconds = Math.floor(qiqiVideo.duration % 60);
+            
+            videoTime.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')} / ${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+        }
+    }
+
+    updateVideoInfo() {
+        const qiqiVideo = document.getElementById('qiqiVideo');
+        const videoTime = document.getElementById('videoTime');
+        
+        if (qiqiVideo.duration) {
+            const durationMinutes = Math.floor(qiqiVideo.duration / 60);
+            const durationSeconds = Math.floor(qiqiVideo.duration % 60);
+            videoTime.textContent = `0:00 / ${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+        }
+    }
+
+    onVideoEnded() {
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        playPauseBtn.textContent = '▶️';
+    }
+
+    initLocalVideo() {
+        const localVideo = document.getElementById('localVideo');
+        if (localVideo && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                .then(stream => {
+                    localVideo.srcObject = stream;
+                })
+                .catch(err => {
+                    console.log('无法访问摄像头:', err);
+                    // 如果无法访问摄像头，显示一个静态图像或者占位符
+                    localVideo.style.background = 'linear-gradient(135deg, #e6f3ff, #d4e9ff)';
+                    localVideo.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #4a5f8a; font-size: 12px;">📷</div>';
+                });
+        } else {
+            // 如果不支持摄像头，显示占位符
+            localVideo.style.background = 'linear-gradient(135deg, #e6f3ff, #d4e9ff)';
+            localVideo.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #4a5f8a; font-size: 12px;">📷</div>';
+        }
+    }
+
+    handleVideoAction(action) {
+        let response = '';
+        
+        switch (action) {
+            case 'wave':
+                response = "呀！主人跟琪琪挥手呢！我...我才没有开心到跳起来呢！只是...刚好也想和主人打招呼！(≧▽≦)";
+                break;
+            case 'heart':
+                response = "哇！主人给琪琪送心心！我...我才没有脸红呢！只是...只是觉得主人好温柔！(｡♥‿♥｡)";
+                break;
+            case 'blowkiss':
+                response = "哼！主人给琪琪飞吻！我...我才没有心动呢！只是...刚好有点热...(⁄ ⁄•⁄ω⁄•⁄ ⁄)";
+                break;
+            case 'dance':
+                response = "哇哦！主人想和琪琪一起跳舞！我...我才没有很开心呢！只是...刚好想跳舞了！(♪♪)";
+                break;
+            case 'sleep':
+                response = "啊啦！主人困了吗？琪琪...琪琪会陪着主人的，乖乖的哦...(｡•́︿•̀｡)";
+                break;
+        }
+        
+        // 在视频通话期间添加消息到聊天记录
+        this.addMessage(response, 'assistant');
     }
 
     startRandomActions() {

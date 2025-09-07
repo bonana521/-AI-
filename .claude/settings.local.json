@@ -14,10 +14,10 @@
       "Bash(git push:*)",
       "Bash(ping:*)",
       "Bash(git tag:*)",
-      "Bash(git config:*)",
-      "Bash(git remote remove:*)",
-      "Bash(git fetch:*)",
-      "Bash(git pull:*)"
+      "Bash(gh repo view:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git rm:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []
