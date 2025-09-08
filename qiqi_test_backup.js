@@ -23,72 +23,6 @@ class KawaiiBeastgirlAssistant {
         this.currentGame = null;
         this.gameMessageInterval = null;
         
-        // 游戏陪玩信息库
-        this.gameMessages = {
-            encouragement: [
-                "主人好厉害！继续加油哦！我...我才不是特意夸你呢！(≧▽≦)",
-                "哇！主人的技术越来越好了呢！琪琪都看呆了！(￣▽￣)",
-                "主人真是太棒了！要不要琪琪给你加油打气？💪",
-                "主人继续加油！琪琪在为你加油呢！我...我才没有担心你输呢！",
-                "主人好厉害！琪琪都觉得自愧不如了！(≧∇≦)",
-                "主人加油！琪琪相信你一定能行的！",
-                "主人真是太厉害了！要不要琪琪给你奖励？(๑•̀ㅂ•́)و✧",
-                "主人继续加油！琪琪在看着你呢！",
-                "主人好厉害！琪琪都要崇拜你了！",
-                "主人加油！不要放弃哦！琪琪支持你！"
-            ],
-            gaming: [
-                "主人，这个游戏好玩吗？琪琪也想试试呢！",
-                "主人玩游戏的样子好认真呢！琪琪在给你加油！",
-                "主人，要不要休息一下？琪琪担心你累着了...",
-                "主人，琪琪觉得你玩游戏的时候最帅了！",
-                "主人，这个游戏有点难呢？要不要琪琪帮你？",
-                "主人，琪琪觉得你一定能通关的！",
-                "主人，玩游戏的时候也要记得休息哦！",
-                "主人，琪琪在旁边陪着你呢！",
-                "主人，要不要听琪琪唱歌给你加油？",
-                "主人，琪琪觉得你是最厉害的玩家！"
-            ],
-            reactions: [
-                "哇！主人好厉害！(≧▽≦)",
-                "主人加油！琪琪在给你打气！",
-                "主人真是太棒了！",
-                "琪琪都觉得主人很厉害呢！",
-                "主人继续加油！不要放弃！",
-                "主人，琪琪相信你！",
-                "主人好厉害！琪琪崇拜你！",
-                "主人加油！琪琪支持你！",
-                "主人真是太厉害了！琪琪都要给你鼓掌了！",
-                "主人继续加油！琪琪在为你加油呢！"
-            ],
-            gameSpecific: {
-                '2048': [
-                    "主人，2048要合并相同数字呢！琪琪也会玩！",
-                    "主人加油！看看能不能达到2048！",
-                    "主人，琪琪觉得你一定能达到2048的！",
-                    "主人，这个游戏要动脑筋呢！琪琪相信你！"
-                ],
-                'pacman': [
-                    "主人，吃豆人要吃掉所有豆豆呢！",
-                    "主人小心不要被幽灵抓住哦！",
-                    "主人，琪琪觉得你一定能通关的！",
-                    "主人加油！吃掉所有豆豆！"
-                ],
-                'snake': [
-                    "主人，贪吃蛇会越来越长呢！",
-                    "主人小心不要撞到自己哦！",
-                    "主人加油！吃到更多食物！",
-                    "主人，琪琪觉得你一定能得到最高分！"
-                ],
-                'life': [
-                    "主人，生命游戏很有趣呢！",
-                    "主人，看看细胞会如何进化！",
-                    "主人，琪琪觉得这个游戏很神奇！",
-                    "主人加油！创造更多生命！"
-                ]
-            }
-        };
-        
         // 智能对话增强系统
         this.conversationHistory = [];
         this.contextMemory = [];
@@ -913,8 +847,8 @@ class KawaiiBeastgirlAssistant {
         const chatInputArea = document.querySelector('.chat-input-area');
         
         // 显示聊天界面，隐藏视频界面
-        chatMessages.style.display = '';
-        chatInputArea.style.display = '';
+        chatMessages.style.display = 'flex';
+        chatInputArea.style.display = 'block';
         videoCallContainer.style.display = 'none';
         
         // 恢复背景音乐播放
@@ -1667,16 +1601,11 @@ class KawaiiBeastgirlAssistant {
             `;
         }
         
-        // 启动自动陪玩消息系统
-        this.startGameCompanion();
-        
         // 添加游戏开始消息
         this.addMessage("哼！想和琪琪一起玩游戏吗？我...我才不是特意准备的呢！只是刚好有这些游戏而已！(≧▽≦)", 'assistant');
         
-        // 如果是游戏主页，发送欢迎消息
-        setTimeout(() => {
-            this.sendGameHomeMessage();
-        }, 2000);
+        // 开始游戏鼓励消息
+        this.startGameEncouragement();
         
         console.log('🎮 游戏窗口已打开');
     }
@@ -1684,8 +1613,8 @@ class KawaiiBeastgirlAssistant {
     closeGame() {
         if (!this.gameWindow) return;
         
-        // 停止游戏陪玩系统
-        this.stopGameCompanion();
+        // 停止游戏鼓励消息
+        this.stopGameEncouragement();
         
         // 隐藏游戏窗口
         this.gameWindow.style.display = 'none';
@@ -1694,8 +1623,8 @@ class KawaiiBeastgirlAssistant {
         const chatMessages = document.getElementById('chatMessages');
         const chatInputArea = document.querySelector('.chat-input-area');
         
-        if (chatMessages) chatMessages.style.display = '';
-        if (chatInputArea) chatInputArea.style.display = '';
+        if (chatMessages) chatMessages.style.display = 'flex';
+        if (chatInputArea) chatInputArea.style.display = 'block';
         
         // 添加游戏结束消息
         this.addMessage("游戏结束啦！下次再和主人一起玩吧！我...我才没有玩得很开心呢！(￣▽￣)", 'assistant');
@@ -1716,8 +1645,8 @@ class KawaiiBeastgirlAssistant {
         const chatMessages = document.getElementById('chatMessages');
         const chatInputArea = document.querySelector('.chat-input-area');
         
-        if (chatMessages) chatMessages.style.display = '';
-        if (chatInputArea) chatInputArea.style.display = '';
+        if (chatMessages) chatMessages.style.display = 'flex';
+        if (chatInputArea) chatInputArea.style.display = 'block';
         
         // 添加最小化提示
         this.addMessage("游戏最小化啦！点击🎮同玩模式可以继续哦！", 'assistant');
@@ -1725,128 +1654,10 @@ class KawaiiBeastgirlAssistant {
         console.log('🎮 游戏窗口已最小化');
     }
     
-    // 游戏陪玩系统
-    startGameCompanion() {
-        // 清除之前的定时器
-        if (this.gameMessageInterval) {
-            clearInterval(this.gameMessageInterval);
-        }
-        
-        // 设置随机发送陪玩消息的定时器（15-30秒随机间隔）
-        this.gameMessageInterval = setInterval(() => {
-            this.sendRandomGameMessage();
-        }, Math.random() * 15000 + 15000); // 15-30秒
-        
-        // 立即发送第一条消息
-        setTimeout(() => {
-            this.sendRandomGameMessage();
-        }, 3000);
-    }
-    
-    // 发送随机陪玩消息
-    sendRandomGameMessage() {
-        if (!this.gameMessages || this.gameWindow.style.display === 'none') {
-            return;
-        }
-        
-        let message;
-        
-        // 根据当前游戏选择特定消息
-        if (this.currentGame && this.gameMessages.gameSpecific[this.currentGame]) {
-            const specificMessages = this.gameMessages.gameSpecific[this.currentGame];
-            const generalMessages = [...this.gameMessages.encouragement, ...this.gameMessages.gaming];
-            const allMessages = [...specificMessages, ...generalMessages];
-            message = allMessages[Math.floor(Math.random() * allMessages.length)];
-        } else {
-            // 随机选择鼓励或游戏相关消息
-            const allMessages = [...this.gameMessages.encouragement, ...this.gameMessages.gaming, ...this.gameMessages.reactions];
-            message = allMessages[Math.floor(Math.random() * allMessages.length)];
-        }
-        
-        this.addGameMessage(message, 'qiqi');
-    }
-    
-    // 发送游戏特定消息
-    sendGameSpecificMessage(gameType) {
-        if (!this.gameMessages || this.gameWindow.style.display === 'none') {
-            return;
-        }
-        
-        let message;
-        
-        if (gameType && this.gameMessages.gameSpecific[gameType]) {
-            const specificMessages = this.gameMessages.gameSpecific[gameType];
-            message = specificMessages[Math.floor(Math.random() * specificMessages.length)];
-        } else {
-            // 通用游戏消息
-            const generalMessages = [...this.gameMessages.encouragement, ...this.gameMessages.gaming];
-            message = generalMessages[Math.floor(Math.random() * generalMessages.length)];
-        }
-        
-        this.addGameMessage(message, 'qiqi');
-    }
-    
-    // 发送游戏主页消息
-    sendGameHomeMessage() {
-        if (!this.gameMessages || this.gameWindow.style.display === 'none') {
-            return;
-        }
-        
-        const homeMessages = [
-            "主人，欢迎来到游戏大厅！想玩什么游戏呢？琪琪推荐2048哦！",
-            "主人，这里有好多游戏呢！琪琪会陪着主人一起玩的！",
-            "主人想玩哪个游戏？琪琪给主人加油打气！",
-            "游戏大厅真好呢！主人和琪琪一起玩游戏吧！",
-            "主人，随便选一个游戏吧！琪琪都会陪你的！"
-        ];
-        
-        const message = homeMessages[Math.floor(Math.random() * homeMessages.length)];
-        this.addGameMessage(message, 'qiqi');
-    }
-    
-    // 添加游戏消息
-    addGameMessage(message, sender) {
-        if (!this.gameMessages) return;
-        
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `game-message ${sender}`;
-        
-        const avatarImg = sender === 'qiqi' ? 'avatar_qiqi.png' : 'avatar_qiqi.png';
-        
-        messageDiv.innerHTML = `
-            <div class="game-message-avatar">
-                <img src="${avatarImg}" alt="琪琪" class="game-mini-avatar">
-            </div>
-            <div class="game-message-content">
-                <div class="game-message-bubble">
-                    ${message}
-                </div>
-            </div>
-        `;
-        
-        this.gameMessages.appendChild(messageDiv);
-        this.gameMessages.scrollTop = this.gameMessages.scrollHeight;
-    }
-    
-    // 停止游戏陪玩
-    stopGameCompanion() {
-        if (this.gameMessageInterval) {
-            clearInterval(this.gameMessageInterval);
-            this.gameMessageInterval = null;
-        }
-    }
-    
     loadGame(gameType) {
         if (!this.gameFrame) return;
         
-        // 设置当前游戏类型
-        this.currentGame = gameType;
-        
-        // 检查是否返回游戏主页
-        const isReturningHome = gameType === 'home' || this.gameFrame.src.includes('games_home.html');
-        
         const gameUrls = {
-            'home': 'https://bonana521.github.io/2048-game/games_home.html',
             '2048': 'https://bonana521.github.io/2048-game/2048.html',
             'pacman': 'https://bonana521.github.io/2048-game/pacman.html',
             'snake': 'https://bonana521.github.io/2048-game/snake.html',
@@ -1854,7 +1665,6 @@ class KawaiiBeastgirlAssistant {
         };
         
         const gameNames = {
-            'home': '游戏大厅',
             '2048': '2048数字游戏',
             'pacman': '吃豆人游戏',
             'snake': '贪吃蛇游戏',
@@ -1862,7 +1672,6 @@ class KawaiiBeastgirlAssistant {
         };
         
         const gameEncouragement = {
-            'home': '欢迎回到游戏大厅！主人想玩什么游戏呢？琪琪都陪着你！',
             '2048': '琪琪知道主人很聪明的！一定可以合并出2048的！',
             'pacman': '小心幽灵哦！琪琪会保护主人的！',
             'snake': '让小蛇长得更长吧！琪琪给主人加油！',
@@ -1870,22 +1679,15 @@ class KawaiiBeastgirlAssistant {
         };
         
         if (gameUrls[gameType]) {
+            this.currentGame = gameType;
             this.gameFrame.src = gameUrls[gameType];
             this.addMessage(`切换到${gameNames[gameType]}！加油哦，主人！💪`, 'assistant');
             
             // 添加游戏专属鼓励消息
             this.addGameMessage(gameEncouragement[gameType]);
             
-            // 如果是返回主页，发送主页欢迎消息，否则发送游戏特定消息
-            if (gameType === 'home' || isReturningHome) {
-                setTimeout(() => {
-                    this.sendGameHomeMessage();
-                }, 1000);
-            } else {
-                setTimeout(() => {
-                    this.sendGameSpecificMessage(gameType);
-                }, 1000);
-            }
+            // 重新开始游戏鼓励消息
+            this.startGameEncouragement();
             
             console.log(`🎮 加载游戏: ${gameNames[gameType]}`);
         } else {

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兽娘助手 - 兽耳小可爱</title>
+    <link rel="stylesheet" href="qiqi_test.css">
+</head>
+<body>
+    <!-- 漂浮装饰元素 -->
+    <div class="floating-element" style="top: 10%; left: 5%; animation-delay: 0s;"></div>
+    <div class="floating-element" style="top: 20%; right: 10%; animation-delay: 2s;"></div>
+    <div class="floating-element" style="top: 60%; left: 8%; animation-delay: 4s;"></div>
+    <div class="floating-element" style="top: 80%; right: 15%; animation-delay: 6s;"></div>
+    <div class="floating-element" style="top: 40%; left: 12%; animation-delay: 1s;"></div>
+    
+    <!-- 爱心粒子特效容器 -->
+    <div id="heartParticles"></div>
+    
+    <!-- 聊天窗口容器 -->
+    <div class="chat-window">
+        <!-- 聊天窗口头部 -->
+        <div class="chat-window-header">
+            <div class="character-info">
+                <div class="avatar" id="avatar">
+                    <img src="avatar_qiqi.png" alt="琪琪" class="avatar-img">
+                    <div class="status-indicator online"></div>
+                </div>
+                <div class="character-details">
+                    <h2>琪琪 🐱</h2>
+                    <p>在线 - 才不是在等你呢！</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="minimize-btn">─</button>
+                <button class="close-btn">✕</button>
+            </div>
+        </div>
+
+        <!-- 聊天消息区域 -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="message assistant">
+                <div class="message-avatar">
+                    <img src="avatar.png" alt="琪琪" class="mini-avatar-img">
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        喂！你终于来了啊！我...我才没有在等你呢！只是...只是刚好在线而已！哼！(￣^￣)
+                    </div>
+                    <div class="message-time">刚刚</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 视频通话区域 -->
+        <div class="video-call-container" id="videoCallContainer" style="display: none;">
+            <div class="video-call-header">
+                <div class="video-call-info">
+                    <div class="video-avatar">
+                        <img src="avatar.png" alt="琪琪" class="video-avatar-img">
+                        <div class="status-indicator online"></div>
+                    </div>
+                    <div class="video-call-details">
+                        <h3>琪琪 🐱</h3>
+                        <p>视频通话中... 才不是特意想见你呢！</p>
+                    </div>
+                </div>
+                <div class="video-call-actions">
+                    <button class="video-control-btn" id="muteBtn" title="静音">🎤</button>
+                    <button class="video-control-btn" id="videoBtn" title="视频">📹</button>
+                    <button class="video-control-btn" id="fullscreenBtn" title="全屏">⛶</button>
+                    <button class="video-end-btn" id="endCallBtn" title="结束通话">📞</button>
+                </div>
+            </div>
+            
+            <div class="video-call-content">
+                <div class="remote-video">
+                    <video id="qiqiVideo" autoplay muted loop>
+                        <source src="qiqi.mp4" type="video/mp4">
+                        您的浏览器不支持视频播放。
+                    </video>
+                    <div class="video-overlay">
+                        <div class="video-controls">
+                            <button class="video-play-pause" id="playPauseBtn">▶️</button>
+                            <div class="video-progress">
+                                <div class="progress-bar" id="progressBar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                                <span class="video-time" id="videoTime">0:00 / 0:00</span>
+                            </div>
+                            <button class="video-volume" id="volumeBtn">🔊</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="local-video">
+                    <video id="localVideo" autoplay muted></video>
+                    <div class="local-video-label">你</div>
+                </div>
+            </div>
+            
+            <div class="video-call-footer">
+                <div class="video-actions">
+                    <button class="video-action-btn" data-action="wave">👋 挥手</button>
+                    <button class="video-action-btn" data-action="heart">💕 送心心</button>
+                    <button class="video-action-btn" data-action="blowkiss">😘 飞吻</button>
+                    <button class="video-action-btn" data-action="dance">🎵 跳舞</button>
+                    <button class="video-action-btn" data-action="sleep">😴 困了</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="chat-input-area">
+            <div class="input-container">
+                <div class="input-actions">
+                    <button class="input-btn" title="表情">😊</button>
+                    <button class="input-btn" title="图片">📷</button>
+                    <button class="input-btn" title="语音">🎤</button>
+                </div>
+                <input type="text" id="userInput" placeholder="和琪琪聊天吧~ (｡♥‿♥｡)" maxlength="500">
+                <button id="sendBtn" class="send-btn">发送 ✨</button>
+            </div>
+            
+            <!-- 快捷操作 -->
+            <div class="quick-actions">
+                <button class="action-btn" data-action="greet">👋 打招呼</button>
+                <button class="action-btn" data-action="compliment">💕 夸夸琪琪</button>
+                <button class="action-btn" data-action="play">🎮 一起玩</button>
+                <button class="action-btn" data-action="comfort">🤗 需要安慰</button>
+                <button class="action-btn" data-action="catFact">🐱 猫咪知识</button>
+                <button class="action-btn" data-action="catImage">🐱 猫咪图片</button>
+                <button class="action-btn" id="videoCallBtn">📹 视频通话</button>
+                <button class="action-btn" id="gameBtn">🎮 同玩模式</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏窗口 -->
+    <div class="game-window" id="gameWindow" style="display: none;">
+        <div class="game-header">
+            <div class="game-info">
+                <div class="game-avatar">
+                    <img src="avatar_qiqi.png" alt="琪琪" class="game-avatar-img">
+                    <div class="status-indicator online"></div>
+                </div>
+                <div class="game-details">
+                    <h3>琪琪陪玩 🐱</h3>
+                    <p>主人加油！琪琪给你加油打气！</p>
+                </div>
+            </div>
+            <div class="game-controls">
+                <button class="game-control-btn" id="gameMinimizeBtn" title="最小化">─</button>
+                <button class="game-control-btn" id="gameCloseBtn" title="关闭">✕</button>
+            </div>
+        </div>
+        
+        <!-- 琪琪消息区域 -->
+        <div class="game-chat-area">
+            <div class="game-messages" id="gameMessages">
+                <div class="game-message qiqi">
+                    <div class="game-message-avatar">
+                        <img src="avatar_qiqi.png" alt="琪琪" class="game-mini-avatar">
+                    </div>
+                    <div class="game-message-content">
+                        <div class="game-message-bubble">
+                            哼！主人终于想和琪琪一起玩游戏啦！我...我才没有特意等你呢！只是刚好也想玩而已！(≧▽≦)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-content">
+            <iframe 
+                id="gameFrame"
+                src="https://bonana521.github.io/2048-game/games_home.html" 
+                frameborder="0" 
+                allowfullscreen>
+            </iframe>
+        </div>
+        
+        <div class="game-footer">
+            <div class="game-actions">
+                <button class="game-action-btn" data-game="2048">🔢 2048</button>
+                <button class="game-action-btn" data-game="pacman">🟡 吃豆人</button>
+                <button class="game-action-btn" data-game="snake">🐍 贪吃蛇</button>
+                <button class="game-action-btn" data-game="life">🧬 生命游戏</button>
+            </div>
+            
+            <!-- 窗口大小控制 -->
+            <div class="window-size-control">
+                <div class="size-control-title">窗口调整:</div>
+                <div class="size-options">
+                    <button class="size-btn" id="resizeBtn" title="拖拽调整大小">🔧</button>
+                    <button class="size-btn" id="resetSizeBtn" title="重置大小">🔄</button>
+                </div>
+                <div class="size-info">
+                    <span id="windowSizeInfo">768 × 1024</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 状态显示区域 -->
+    <div class="status-bar">
+        <div class="status-info">
+            <span class="mood-status">心情: 才不是开心呢！ 😤</span>
+            <span class="energy-status">体力: 才不是充满呢！ 🔋</span>
+        </div>
+        <div class="typing-indicator" id="typingIndicator" style="display: none;">
+            <span></span>
+            <span></span>
+            <span></span>
+            琪琪才不是在输入呢...
+        </div>
+    </div>
+
+    <!-- 背景音乐控件 -->
+    <div class="bg-music-control" id="bgMusicControl">
+        <button class="music-toggle-btn" id="musicToggleBtn" title="背景音乐">
+            🎵
+        </button>
+        <div class="music-volume-control" id="musicVolumeControl" style="display: none;">
+            <input type="range" id="musicVolumeSlider" min="0" max="100" value="30" class="volume-slider">
+            <span class="volume-display">30%</span>
+        </div>
+    </div>
+
+    <!-- 背景音乐 -->
+    <audio id="bgMusic" loop>
+        <source src="qiqi.mp4" type="video/mp4">
+        您的浏览器不支持音频播放。
+    </audio>
+
+    <script src="qiqi_test.js"></script>
+</body>
+</html>
