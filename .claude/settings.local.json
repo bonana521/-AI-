@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(curl:*)",
+      "Bash(mkdir:*)",
+      "Bash(start:*)",
+      "Bash(python:*)",
+      "Bash(node:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git remote add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(ping:*)",
+      "Bash(git tag:*)",
+      "Bash(gh repo view:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git rm:*)",
+      "Bash(git checkout:*)",
+      "Bash(git fetch:*)",
+      "WebFetch(domain:catfact.ninja)",
+      "WebFetch(domain:zhuanlan.zhihu.com)",
+      "Bash(nslookup:*)",
+      "Bash(git config:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(git clone:*)",
+      "Bash(find:*)",
+      "Bash(cp:*)",
+      "WebFetch(domain:bonana521.github.io)",
+      "Bash(gh api:*)",
+      "Bash(git reset:*)",
+      "Bash(git pull:*)",
+      "Bash(git merge:*)",
+      "Bash(gh run list:*)",
+      "WebFetch(domain:bigmodel.cn)",
+      "Read(//d//**)",
+      "Bash(md5sum:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

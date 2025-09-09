@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>同玩模式功能测试</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .test-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: '77体', monospace;
+            font-size: 12px;
+            z-index: 9999;
+            max-width: 350px;
+            border: 2px solid #ff69b4;
+        }
+        .test-section {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ff69b4;
+        }
+        .test-section:last-child {
+            border-bottom: none;
+        }
+        .test-btn {
+            background: #ff69b4;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .test-btn:hover {
+            background: #ff1493;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .status-active { background: #32cd32; }
+        .status-inactive { background: #ff0000; }
+        .status-unknown { background: #ffa500; }
+        .timer-display {
+            background: rgba(255, 105, 180, 0.2);
+            padding: 5px;
+            border-radius: 5px;
+            margin: 5px 0;
+            font-weight: bold;
+        }
+        .message-log {
+            max-height: 150px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 10px;
+        }
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px 0;
+            border-bottom: 1px solid #333;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .test-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 测试面板 -->
+    <div class="test-panel" id="testPanel">
+        <h3>🎮 同玩模式功能测试</h3>
+        
+        <div class="test-section">
+            <h4>📊 系统状态</h4>
+            <div id="systemStatus">检查中...</div>
+            <button class="test-btn" onclick="checkSystemStatus()">刷新状态</button>
+        </div>
+        
+        <div class="test-section">
+            <h4>⏰ 自动消息测试</h4>
+            <div id="autoMessageStatus">
+                <span class="status-indicator status-unknown"></span>
+                状态未知
+            </div>
+            <div class="timer-display" id="timerDisplay">等待测试...</div>
+            <div class="test-controls">
+                <button class="test-btn" onclick="startAutoMessageTest()">开始测试</button>
+                <button class="test-btn" onclick="stopAutoMessageTest()">停止测试</button>
+                <button class="test-btn" onclick="checkTimerInterval()">检查间隔</button>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h4>🎯 游戏事件测试</h4>
+            <div class="test-controls">
+                <button class="test-btn" onclick="testGameOpen()">测试打开游戏</button>
+                <button class="test-btn" onclick="testGameClose()">测试关闭游戏</button>
+                <button class="test-btn" onclick="testGameSwitch()">测试切换游戏</button>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h4>📝 消息日志</h4>
+            <div class="message-log" id="messageLog"></div>
+            <button class="test-btn" onclick="clearLog()">清空日志</button>
+        </div>
+    </div>
+
+    <!-- 原始页面内容 -->
+    <div class="chat-window">
+        <!-- 聊天窗口头部 -->
+        <div class="chat-window-header">
+            <div class="character-info">
+                <div class="avatar" id="avatar">
+                    <img src="avatar_qiqi.png" alt="琪琪" class="avatar-img">
+                    <div class="status-indicator online"></div>
+                </div>
+                <div class="character-details">
+                    <h2>琪琪 🐱</h2>
+                    <p>在线 - 才不是在等你呢！</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="minimize-btn">─</button>
+                <button class="close-btn">✕</button>
+            </div>
+        </div>
+
+        <!-- 聊天消息区域 -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="message assistant">
+                <div class="message-avatar">
+                    <img src="avatar_qiqi.png" alt="琪琪" class="mini-avatar-img">
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        喂！你终于来了啊！我...我才没有在等你呢！只是...刚好在线而已！哼！(￣^￣)
+                    </div>
+                    <div class="message-time">刚刚</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 聊天输入区域 -->
+        <div class="chat-input-area">
+            <div class="input-container">
+                <input type="text" id="chatInput" placeholder="和琪琪说点什么吧..." maxlength="200">
+                <button id="sendBtn" class="send-btn">发送</button>
+            </div>
+            <div class="quick-actions">
+                <button class="quick-btn" data-action="greet">👋 打招呼</button>
+                <button class="quick-btn" data-action="praise">💕 夸夸琪琪</button>
+                <button class="quick-btn" data-action="play">🎮 一起玩</button>
+                <button class="quick-btn" data-action="comfort">🤗 需要安慰</button>
+                <button class="quick-btn" data-action="cat">🐱 猫咪知识</button>
+                <button class="quick-btn" data-action="image">🐱 猫咪图片</button>
+                <button class="quick-btn" data-action="video">📹 视频通话</button>
+                <button class="quick-btn" data-action="game">🎮 同玩模式</button>
+                <button class="quick-btn" data-action="music">🎵 音乐控制</button>
+            </div>
+        </div>
+
+        <!-- 状态信息 -->
+        <div class="status-info">
+            <span class="mood-status">心情: 才不是开心呢！ 😤</span>
+            <span class="energy-status">体力: 才不是充满呢！ 🔋</span>
+        </div>
+        <div class="typing-indicator" id="typingIndicator" style="display: none;">
+            <span></span>
+            <span></span>
+            <span></span>
+            琪琪才不是在输入呢...
+        </div>
+    </div>
+
+    <!-- 游戏窗口 -->
+    <div class="game-window" id="gameWindow" style="display: none;">
+        <div class="game-header">
+            <div class="game-info">
+                <div class="game-avatar">
+                    <img src="avatar_qiqi.png" alt="琪琪" class="game-avatar-img">
+                </div>
+                <div class="game-details">
+                    <h3>🎮 同玩模式</h3>
+                    <p>琪琪陪你一起玩游戏！</p>
+                </div>
+            </div>
+            <div class="game-controls">
+                <button class="game-control-btn" id="minimizeGameBtn" title="最小化">─</button>
+                <button class="game-control-btn" id="closeGameBtn" title="关闭">✕</button>
+            </div>
+        </div>
+        
+        <div class="game-chat-area">
+            <div class="game-messages" id="gameMessages">
+                <!-- 游戏消息将在这里显示 -->
+            </div>
+            
+            <div class="game-content">
+                <iframe id="gameFrame" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+        
+        <div class="game-footer">
+            <div class="game-actions">
+                <button class="game-btn" data-game="home">🏠 游戏大厅</button>
+                <button class="game-btn" data-game="2048">🔢 2048</button>
+                <button class="game-btn" data-game="pacman">🟡 吃豆人</button>
+                <button class="game-btn" data-game="snake">🐍 贪吃蛇</button>
+                <button class="game-btn" data-game="life">🧬 生命游戏</button>
+            </div>
+            <div id="windowSizeInfo">窗口: 800x600</div>
+        </div>
+    </div>
+
+    <!-- 背景音乐控件 -->
+    <div class="bg-music-control" id="bgMusicControl">
+        <button class="music-toggle-btn" id="musicToggleBtn" title="背景音乐">
+            🎵
+        </button>
+        <div class="music-volume-control" id="musicVolumeControl" style="display: none;">
+            <input type="range" id="musicVolumeSlider" min="0" max="100" value="30" class="volume-slider">
+            <div class="volume-display">30%</div>
+        </div>
+    </div>
+
+    <!-- 背景音乐 -->
+    <audio id="bgMusic" loop>
+        <source src="qiqi.mp4" type="video/mp4">
+        您的浏览器不支持音频播放。
+    </audio>
+
+    <script src="qiqi_test.js"></script>
+    <script>
+        let testTimer;
+        let messageCount = 0;
+        let testStartTime;
+        let lastMessageTime;
+        
+        // 测试函数
+        function checkSystemStatus() {
+            const status = document.getElementById('systemStatus');
+            const qiqiAssistant = window.qiqiAssistant;
+            
+            if (!qiqiAssistant) {
+                status.innerHTML = '<span class="status-indicator status-inactive"></span>琪琪助手未初始化';
+                return;
+            }
+            
+            const gameWindow = qiqiAssistant.gameWindow;
+            const gameMessages = qiqiAssistant.gameMessages;
+            const gameMessageInterval = qiqiAssistant.gameMessageInterval;
+            
+            status.innerHTML = `
+                <div><span class="status-indicator ${gameWindow ? 'status-active' : 'status-inactive'}"></span>游戏窗口: ${gameWindow ? '✅' : '❌'}</div>
+                <div><span class="status-indicator ${gameMessages ? 'status-active' : 'status-inactive'}"></span>消息区域: ${gameMessages ? '✅' : '❌'}</div>
+                <div><span class="status-indicator ${gameMessageInterval ? 'status-active' : 'status-inactive'}"></span>定时器: ${gameMessageInterval ? '运行中' : '已停止'}</div>
+                <div><span class="status-indicator status-active"></span>当前游戏: ${qiqiAssistant.currentGame || '无'}</div>
+            `;
+        }
+        
+        function startAutoMessageTest() {
+            if (!window.qiqiAssistant) {
+                logMessage('❌ 琪琪助手未初始化');
+                return;
+            }
+            
+            messageCount = 0;
+            testStartTime = Date.now();
+            lastMessageTime = Date.now();
+            
+            logMessage('🚀 开始自动消息测试');
+            logMessage('📊 将记录10条消息的时间间隔');
+            
+            // 监听游戏消息
+            const gameMessagesEl = document.getElementById('gameMessages');
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'childList') {
+                        const addedNodes = Array.from(mutation.addedNodes);
+                        const qiqiMessages = addedNodes.filter(node => 
+                            node.nodeType === 1 && node.classList && node.classList.contains('qiqi')
+                        );
+                        
+                        qiqiMessages.forEach(msg => {
+                            messageCount++;
+                            const now = Date.now();
+                            const interval = now - lastMessageTime;
+                            const totalElapsed = now - testStartTime;
+                            
+                            logMessage(`📨 消息 #${messageCount}: 间隔 ${interval}ms (总计 ${totalElapsed}ms)`);
+                            lastMessageTime = now;
+                            
+                            if (messageCount >= 10) {
+                                stopAutoMessageTest();
+                            }
+                        });
+                    }
+                });
+            });
+            
+            observer.observe(gameMessagesEl, { childList: true });
+            
+            // 5秒后自动开始游戏
+            setTimeout(() => {
+                if (window.qiqiAssistant) {
+                    window.qiqiAssistant.startGame();
+                    logMessage('🎮 自动开始游戏');
+                }
+            }, 2000);
+        }
+        
+        function stopAutoMessageTest() {
+            logMessage('⏹️ 停止测试');
+            if (messageCount > 0) {
+                const totalTime = Date.now() - testStartTime;
+                const averageInterval = totalTime / messageCount;
+                logMessage(`📊 测试结果: ${messageCount}条消息, 平均间隔 ${averageInterval}ms`);
+            }
+        }
+        
+        function checkTimerInterval() {
+            if (!window.qiqiAssistant) {
+                logMessage('❌ 琪琪助手未初始化');
+                return;
+            }
+            
+            const timerDisplay = document.getElementById('timerDisplay');
+            const interval = window.qiqiAssistant.gameMessageInterval;
+            
+            if (interval) {
+                timerDisplay.textContent = '⏰ 定时器运行中';
+                logMessage('📊 定时器正在运行');
+            } else {
+                timerDisplay.textContent = '⏸️ 定时器已停止';
+                logMessage('📊 定时器已停止');
+            }
+        }
+        
+        function testGameOpen() {
+            if (!window.qiqiAssistant) {
+                logMessage('❌ 琪琪助手未初始化');
+                return;
+            }
+            
+            logMessage('🎯 测试游戏打开消息');
+            window.qiqiAssistant.startGame();
+        }
+        
+        function testGameClose() {
+            if (!window.qiqiAssistant) {
+                logMessage('❌ 琪琪助手未初始化');
+                return;
+            }
+            
+            logMessage('🎯 测试游戏关闭消息');
+            window.qiqiAssistant.closeGame();
+        }
+        
+        function testGameSwitch() {
+            if (!window.qiqiAssistant) {
+                logMessage('❌ 琪琪助手未初始化');
+                return;
+            }
+            
+            logMessage('🎯 测试游戏切换消息');
+            if (window.qiqiAssistant.gameWindow.style.display === 'none') {
+                window.qiqiAssistant.startGame();
+                setTimeout(() => {
+                    window.qiqiAssistant.loadGame('2048');
+                }, 2000);
+            } else {
+                window.qiqiAssistant.loadGame('2048');
+            }
+        }
+        
+        function logMessage(message) {
+            const log = document.getElementById('messageLog');
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = `[${time}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('messageLog').innerHTML = '';
+        }
+        
+        // 页面加载后自动检查
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                checkSystemStatus();
+                logMessage('🔧 测试面板已加载');
+            }, 2000);
+        });
+        
+        // 定期更新状态
+        setInterval(checkSystemStatus, 5000);
+    </script>
+</body>
+</html>
