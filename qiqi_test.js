@@ -213,7 +213,25 @@ class KawaiiBeastgirlAssistant {
                 "主人，你要是需要建议，琪琪虽然不太懂但会尽力帮助的！",
                 "琪琪觉得主人的直觉好敏锐呢！总能找到最佳策略！",
                 "主人，你玩游戏的时候琪琪都在为你加油呢！",
-                "唔...琪琪有点困了，但为了主人，琪琪要保持清醒！"
+                "唔...琪琪有点困了，但为了主人，琪琪要保持清醒！",
+                "主人，我们一起玩游戏的时间过得好快呢！琪琪好开心！",
+                "琪琪觉得主人不管玩什么游戏都很厉害呢！",
+                "主人，你要是渴了饿了一定要告诉琪琪哦！",
+                "琪琪看着主人玩游戏，心情也跟着紧张起来呢！",
+                "主人，你的手指好灵活啊！琪琪都看不过来了！",
+                "唔...琪琪有点想知道主人最喜欢哪个游戏呢？",
+                "主人，琪琪会一直陪着主人的，不管玩多久！",
+                "琪琪觉得和主人一起玩游戏是最幸福的事情了！",
+                "主人，你玩游戏的时候琪琪都在默默为你加油呢！",
+                "唔...琪琪有点期待主人下一个会玩什么游戏呢！",
+                "主人，我们一起加油！琪琪相信你一定可以的！",
+                "琪琪觉得主人玩游戏的时候最帅了！",
+                "主人，要不要听琪琪唱歌给你加油？",
+                "琪琪好想抱抱主人，给你更多力量！",
+                "主人，琪琪的心跳得好快，看着你玩游戏！",
+                "唔...琪琪有点紧张，比主人还紧张呢！",
+                "主人，琪琪会一直支持你的决定！",
+                "琪琪觉得和主人在一起的每一刻都好珍贵！"
             ]
         };
         
@@ -1779,7 +1797,7 @@ class KawaiiBeastgirlAssistant {
         // 显示游戏窗口
         this.gameWindow.style.display = 'flex';
         
-        // 清空游戏消息区域
+        // 清空游戏消息区域并立即发送欢迎消息
         if (this.gameMessages) {
             this.gameMessages.innerHTML = `
                 <div class="game-message qiqi">
@@ -1801,15 +1819,18 @@ class KawaiiBeastgirlAssistant {
         // 添加游戏开始消息
         this.addMessage("哼！想和琪琪一起玩游戏吗？我...我才不是特意准备的呢！只是刚好有这些游戏而已！(≧▽≦)", 'assistant');
         
-        // 发送游戏打开消息
-        setTimeout(() => {
-            this.sendGameOpeningMessage();
-        }, 1000);
+        // 立即发送游戏打开消息
+        this.sendGameOpeningMessage();
         
-        // 如果是游戏主页，发送欢迎消息
+        // 2秒后发送第二条消息
         setTimeout(() => {
             this.sendGameHomeMessage();
-        }, 3000);
+        }, 2000);
+        
+        // 5秒后发送第三条消息
+        setTimeout(() => {
+            this.sendRandomGameMessage();
+        }, 5000);
         
         console.log('🎮 游戏窗口已打开');
     }
@@ -1870,36 +1891,85 @@ class KawaiiBeastgirlAssistant {
         // 清除之前的定时器
         if (this.gameMessageInterval) {
             clearInterval(this.gameMessageInterval);
+            console.log('🎮 清除之前的游戏消息定时器');
         }
         
-        // 设置随机发送陪玩消息的定时器（8-12秒随机间隔）
+        // 设置随机发送陪玩消息的定时器（6-10秒随机间隔）
+        const interval = Math.random() * 4000 + 6000; // 6-10秒
+        console.log('🎮 启动游戏消息定时器，间隔:', Math.round(interval), 'ms');
+        
         this.gameMessageInterval = setInterval(() => {
+            console.log('🎮 定时器触发，发送随机消息');
             this.sendRandomGameMessage();
-        }, Math.random() * 4000 + 8000); // 8-12秒
+        }, interval);
         
         // 立即发送第一条消息
         setTimeout(() => {
+            console.log('🎮 发送第一条游戏消息');
             this.sendRandomGameMessage();
         }, 3000);
+        
+        // 添加定时器状态检查
+        this.gameCompanionActive = true;
+        console.log('🎮 游戏陪玩系统已启动');
+        
+        // 启动定期检查机制，确保陪玩系统正常运行
+        this.startGameCompanionHealthCheck();
+    }
+    
+    // 游戏陪玩系统健康检查
+    startGameCompanionHealthCheck() {
+        // 每30秒检查一次游戏陪玩系统状态
+        if (this.gameCompanionHealthInterval) {
+            clearInterval(this.gameCompanionHealthInterval);
+        }
+        
+        this.gameCompanionHealthInterval = setInterval(() => {
+            if (this.gameCompanionActive && this.gameWindow.style.display === 'flex') {
+                // 检查定时器是否还在运行
+                if (!this.gameMessageInterval) {
+                    console.log('🎮 检测到游戏消息定时器丢失，重新启动');
+                    this.startGameCompanion();
+                } else {
+                    console.log('🎮 游戏陪玩系统运行正常');
+                }
+            }
+        }, 30000); // 30秒检查一次
     }
     
     // 发送随机陪玩消息
     sendRandomGameMessage() {
         if (!this.gameMessages || this.gameWindow.style.display === 'none') {
+            console.log('🎮 消息发送失败：游戏消息容器不存在或窗口隐藏');
             return;
         }
         
         let message;
+        let messageSource = "";
         
         // 根据当前游戏选择特定消息
         if (this.currentGame && this.gameMessages.gameSpecific[this.currentGame]) {
-            const specificMessages = this.gameMessages.gameSpecific[this.currentGame];
-            const generalMessages = [...this.gameMessages.encouragement, ...this.gameMessages.gaming];
-            const contextualMessages = this.gameMessages.contextual || [];
-            const allMessages = [...specificMessages, ...generalMessages, ...contextualMessages];
-            message = allMessages[Math.floor(Math.random() * allMessages.length)];
+            // 40% 概率发送游戏特定消息
+            // 30% 概率发送鼓励消息
+            // 20% 概率发送情境感知消息
+            // 10% 概率发送反应消息
+            const rand = Math.random();
+            
+            if (rand < 0.4) {
+                message = this.gameMessages.gameSpecific[this.currentGame][Math.floor(Math.random() * this.gameMessages.gameSpecific[this.currentGame].length)];
+                messageSource = "游戏特定";
+            } else if (rand < 0.7) {
+                message = this.gameMessages.encouragement[Math.floor(Math.random() * this.gameMessages.encouragement.length)];
+                messageSource = "鼓励";
+            } else if (rand < 0.9) {
+                message = this.gameMessages.contextual[Math.floor(Math.random() * this.gameMessages.contextual.length)];
+                messageSource = "情境感知";
+            } else {
+                message = this.gameMessages.reactions[Math.floor(Math.random() * this.gameMessages.reactions.length)];
+                messageSource = "反应";
+            }
         } else {
-            // 随机选择鼓励、游戏相关、反应或情境感知消息
+            // 在游戏主页时，使用更均衡的消息分布
             const allMessages = [
                 ...this.gameMessages.encouragement, 
                 ...this.gameMessages.gaming, 
@@ -1907,7 +1977,15 @@ class KawaiiBeastgirlAssistant {
                 ...this.gameMessages.contextual
             ];
             message = allMessages[Math.floor(Math.random() * allMessages.length)];
+            messageSource = "通用";
         }
+        
+        console.log(`🎮 发送游戏消息 (${messageSource}):`, message);
+        console.log('🎮 游戏窗口状态:', {
+            display: this.gameWindow.style.display,
+            currentGame: this.currentGame,
+            gameMessagesExists: !!this.gameMessages
+        });
         
         this.addGameMessage(message, 'qiqi');
     }
@@ -1999,7 +2077,17 @@ class KawaiiBeastgirlAssistant {
         if (this.gameMessageInterval) {
             clearInterval(this.gameMessageInterval);
             this.gameMessageInterval = null;
+            console.log('🎮 游戏消息定时器已停止');
         }
+        
+        if (this.gameCompanionHealthInterval) {
+            clearInterval(this.gameCompanionHealthInterval);
+            this.gameCompanionHealthInterval = null;
+            console.log('🎮 游戏陪玩健康检查已停止');
+        }
+        
+        this.gameCompanionActive = false;
+        console.log('🎮 游戏陪玩系统已停止');
     }
     
     loadGame(gameType) {
@@ -2039,18 +2127,24 @@ class KawaiiBeastgirlAssistant {
             this.gameFrame.src = gameUrls[gameType];
             this.addMessage(`切换到${gameNames[gameType]}！加油哦，主人！💪`, 'assistant');
             
-            // 添加游戏专属鼓励消息
+            // 立即发送游戏专属鼓励消息
             this.addGameMessage(gameEncouragement[gameType]);
             
             // 如果是返回主页，发送主页欢迎消息，否则发送游戏特定消息
             if (gameType === 'home' || isReturningHome) {
+                // 立即发送主页欢迎消息
+                this.sendGameHomeMessage();
+                // 3秒后再发送一条相关消息
                 setTimeout(() => {
                     this.sendGameHomeMessage();
-                }, 1000);
+                }, 3000);
             } else {
+                // 立即发送游戏特定消息
+                this.sendGameSpecificMessage(gameType);
+                // 3秒后再发送一条鼓励消息
                 setTimeout(() => {
                     this.sendGameSpecificMessage(gameType);
-                }, 1000);
+                }, 3000);
             }
             
             console.log(`🎮 加载游戏: ${gameNames[gameType]}`);
@@ -2134,16 +2228,28 @@ class KawaiiBeastgirlAssistant {
     }
     
     addGameMessage(message) {
-        if (!this.gameMessages) return;
+        if (!this.gameMessages) {
+            console.log('🎮 消息添加失败：gameMessages 容器不存在');
+            return;
+        }
+        
+        console.log('🎮 尝试添加消息:', message);
+        console.log('🎮 gameMessages 容器状态:', {
+            exists: !!this.gameMessages,
+            children: this.gameMessages.children.length,
+            display: this.gameMessages.style.display
+        });
         
         // 检查是否已有琪琪的消息，如果有则替换
         const existingMessage = this.gameMessages.querySelector('.game-message.qiqi');
         
         if (existingMessage) {
+            console.log('🎮 找到现有消息，进行替换');
             // 替换现有消息的内容
             const messageBubble = existingMessage.querySelector('.game-message-bubble');
             if (messageBubble) {
                 messageBubble.textContent = message;
+                console.log('🎮 消息内容已更新');
             }
             
             // 添加淡入淡出动画效果
@@ -2151,6 +2257,7 @@ class KawaiiBeastgirlAssistant {
             existingMessage.offsetHeight; // 触发重排
             existingMessage.style.animation = 'fadeIn 0.5s ease-in-out';
         } else {
+            console.log('🎮 创建新消息元素');
             // 如果没有现有消息，则创建新消息
             const messageElement = document.createElement('div');
             messageElement.className = 'game-message qiqi';
@@ -2166,10 +2273,12 @@ class KawaiiBeastgirlAssistant {
             `;
             
             this.gameMessages.appendChild(messageElement);
+            console.log('🎮 新消息已添加到容器');
         }
         
         // 滚动到底部
         this.gameMessages.scrollTop = this.gameMessages.scrollHeight;
+        console.log('🎮 消息添加完成，当前消息数量:', this.gameMessages.children.length);
     }
     
     initWindowSizeControl() {
@@ -2185,17 +2294,22 @@ class KawaiiBeastgirlAssistant {
         const defaultWidth = 768;
         const defaultHeight = 1024;
         
-        // 更新窗口尺寸显示
-        const updateSizeInfo = () => {
-            const rect = gameWindow.getBoundingClientRect();
-            windowSizeInfo.textContent = `${Math.round(rect.width)} × ${Math.round(rect.height)}`;
+        // 防抖函数，限制ResizeObserver的触发频率
+        let resizeTimeout;
+        const debouncedUpdateSizeInfo = () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const rect = gameWindow.getBoundingClientRect();
+                windowSizeInfo.textContent = `${Math.round(rect.width)} × ${Math.round(rect.height)}`;
+                console.log('🎮 窗口大小已更新:', windowSizeInfo.textContent);
+            }, 100); // 100ms 防抖延迟
         };
         
         // 重置窗口大小
         const resetWindowSize = () => {
             gameWindow.style.width = defaultWidth + 'px';
             gameWindow.style.height = defaultHeight + 'px';
-            updateSizeInfo();
+            debouncedUpdateSizeInfo();
             this.addGameMessage('哼！琪琪帮你重置到默认大小啦！');
         };
         
@@ -2220,15 +2334,17 @@ class KawaiiBeastgirlAssistant {
         resizeBtn.addEventListener('click', toggleResizeMode);
         resetSizeBtn.addEventListener('click', resetWindowSize);
         
-        // 监听窗口大小变化
-        const resizeObserver = new ResizeObserver(updateSizeInfo);
+        // 监听窗口大小变化（使用防抖）
+        const resizeObserver = new ResizeObserver(debouncedUpdateSizeInfo);
         resizeObserver.observe(gameWindow);
         
         // 初始化尺寸显示
-        updateSizeInfo();
+        debouncedUpdateSizeInfo();
         
         // 初始设置为不可调整大小
         gameWindow.style.resize = 'none';
+        
+        console.log('🎮 窗口大小控制已初始化');
     }
 }
 
