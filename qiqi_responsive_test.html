@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>琪琪像素风 - 响应式测试</title>
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background: #1a001a;
+            color: #f0f0f0;
+            image-rendering: pixelated;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 50%, #c71585 100%);
+            border: 4px solid #fff;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 0px #000;
+            margin-bottom: 10px;
+        }
+        
+        .device-info {
+            background: #2a002a;
+            border: 2px solid #ff69b4;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .screen-size {
+            font-size: 14px;
+            color: #ff69b4;
+            margin-bottom: 10px;
+        }
+        
+        .current-breakpoint {
+            font-size: 12px;
+            color: #f0f0f0;
+        }
+        
+        .test-section {
+            background: #1a001a;
+            border: 3px solid #ff69b4;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-title {
+            font-size: 14px;
+            color: #ff69b4;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 0px #000;
+        }
+        
+        /* 文字易读性测试 */
+        .text-samples {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .text-sample {
+            background: #fff;
+            border: 2px solid #ff69b4;
+            padding: 15px;
+            color: #333;
+        }
+        
+        .sample-title {
+            font-size: 12px;
+            color: #ff69b4;
+            margin-bottom: 10px;
+        }
+        
+        .sample-content {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        /* 按钮测试 */
+        .button-test {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .test-btn {
+            background: #ff69b4;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 12px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        /* 聊天测试 */
+        .chat-test {
+            background: #ffe0f0;
+            border: 2px solid #ff69b4;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .chat-bubble {
+            background: #fff;
+            color: #333;
+            border: 3px solid #ff69b4;
+            padding: 15px;
+            font-size: 12px;
+            max-width: 300px;
+            margin-bottom: 10px;
+        }
+        
+        /* 状态测试 */
+        .status-test {
+            background: #2a002a;
+            border: 2px solid #ff69b4;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #f0f0f0;
+        }
+        
+        /* 输入测试 */
+        .input-test {
+            background: #fff;
+            border: 2px solid #ff69b4;
+            padding: 12px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 11px;
+            color: #333;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        /* 响应式断点测试 */
+        .breakpoint-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ff69b4;
+            color: #fff;
+            padding: 10px;
+            border: 2px solid #fff;
+            font-size: 10px;
+            z-index: 1000;
+        }
+        
+        .breakpoint-indicator.mobile {
+            background: #ff1493;
+        }
+        
+        .breakpoint-indicator.tablet {
+            background: #ff69b4;
+        }
+        
+        .breakpoint-indicator.desktop {
+            background: #c71585;
+        }
+        
+        .breakpoint-indicator.large {
+            background: #8b0000;
+        }
+        
+        /* 响应式样式 */
+        @media (max-width: 768px) {
+            body {
+                font-size: 11px;
+            }
+            
+            .header h1 {
+                font-size: 18px;
+            }
+            
+            .text-sample {
+                padding: 12px;
+            }
+            
+            .sample-content {
+                font-size: 11px;
+            }
+            
+            .test-btn {
+                font-size: 9px;
+                padding: 10px;
+            }
+            
+            .chat-bubble {
+                font-size: 11px;
+                max-width: 250px;
+                padding: 12px;
+            }
+            
+            .status-test {
+                font-size: 9px;
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .input-test {
+                font-size: 10px;
+                padding: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                font-size: 10px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 16px;
+            }
+            
+            .text-sample {
+                padding: 10px;
+            }
+            
+            .sample-content {
+                font-size: 10px;
+            }
+            
+            .test-btn {
+                font-size: 8px;
+                padding: 8px;
+            }
+            
+            .chat-bubble {
+                font-size: 10px;
+                max-width: 200px;
+                padding: 10px;
+            }
+            
+            .status-test {
+                font-size: 8px;
+                padding: 8px;
+            }
+            
+            .input-test {
+                font-size: 9px;
+                padding: 8px;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            body {
+                font-size: 14px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .sample-content {
+                font-size: 14px;
+            }
+            
+            .test-btn {
+                font-size: 12px;
+                padding: 15px;
+            }
+            
+            .chat-bubble {
+                font-size: 14px;
+                max-width: 400px;
+            }
+            
+            .status-test {
+                font-size: 12px;
+            }
+            
+            .input-test {
+                font-size: 13px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 断点指示器 -->
+    <div class="breakpoint-indicator" id="breakpointIndicator">
+        桌面端 (>1200px)
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🎮 琪琪像素风响应式测试</h1>
+            <p>测试不同设备状态下的文字易读性</p>
+        </div>
+        
+        <div class="device-info">
+            <div class="screen-size" id="screenSize">
+                屏幕尺寸: <span id="screenWidth"></span> × <span id="screenHeight"></span>
+            </div>
+            <div class="current-breakpoint" id="currentBreakpoint">
+                当前断点: 桌面端
+            </div>
+        </div>
+        
+        <!-- 文字易读性测试 -->
+        <div class="test-section">
+            <h2 class="test-title">📝 文字易读性测试</h2>
+            <div class="text-samples">
+                <div class="text-sample">
+                    <div class="sample-title">标准文字 (12px)</div>
+                    <div class="sample-content">
+                        哼！才不是特意想测试文字易读性呢！只是...刚好觉得这个字体大小还不错啦！琪琪的文字在各种设备上都应该清晰可见。
+                    </div>
+                </div>
+                
+                <div class="text-sample">
+                    <div class="sample-title">小文字 (10px)</div>
+                    <div class="sample-content" style="font-size: 10px;">
+                        这是小号文字测试，即使在手机端也应该保持可读性。像素字体在小尺寸下可能需要特别处理。
+                    </div>
+                </div>
+                
+                <div class="text-sample">
+                    <div class="sample-title">大文字 (14px)</div>
+                    <div class="sample-content" style="font-size: 14px;">
+                        这是大号文字测试，适合桌面端和大屏幕设备，提供更好的阅读体验。
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 按钮测试 -->
+        <div class="test-section">
+            <h2 class="test-title">🔘 按钮易读性测试</h2>
+            <div class="button-test">
+                <button class="test-btn">👋 打招呼</button>
+                <button class="test-btn">💕 夸夸琪琪</button>
+                <button class="test-btn">🎮 一起玩</button>
+                <button class="test-btn">🤗 需要安慰</button>
+                <button class="test-btn">🐱 猫咪知识</button>
+                <button class="test-btn">📹 视频通话</button>
+            </div>
+        </div>
+        
+        <!-- 聊天测试 -->
+        <div class="test-section">
+            <h2 class="test-title">💬 聊天界面测试</h2>
+            <div class="chat-test">
+                <div class="chat-bubble">
+                    哼！才不是想测试聊天界面呢！只是...刚好想看看在手机上聊天的效果怎么样！(｀・ω・´)
+                </div>
+                <div class="chat-bubble">
+                    这个聊天气泡在不同设备上应该都能保持良好的阅读体验，文字大小会自动调整。
+                </div>
+            </div>
+        </div>
+        
+        <!-- 状态栏测试 -->
+        <div class="test-section">
+            <h2 class="test-title">📊 状态栏测试</h2>
+            <div class="status-test">
+                <div>心情: 才不是开心呢！ 😤</div>
+                <div>体力: 充满活力！ 🔋</div>
+                <div>模式: 响应式测试</div>
+            </div>
+        </div>
+        
+        <!-- 输入测试 -->
+        <div class="test-section">
+            <h2 class="test-title">⌨️ 输入框测试</h2>
+            <input type="text" class="input-test" placeholder="在不同设备上测试输入框的易读性..." maxlength="100">
+            <div class="text-sample">
+                <div class="sample-title">输入提示</div>
+                <div class="sample-content">
+                    尝试调整浏览器窗口大小，观察文字大小如何自适应变化。在手机端，文字会变小但保持可读性；在桌面端，文字会变大提供更好的阅读体验。
+                </div>
+            </div>
+        </div>
+        
+        <!-- 颜色对比度测试 -->
+        <div class="test-section">
+            <h2 class="test-title">🎨 颜色对比度测试</h2>
+            <div class="text-samples">
+                <div class="text-sample" style="background: #000; color: #fff;">
+                    <div class="sample-title" style="color: #ff69b4;">黑底白字</div>
+                    <div class="sample-content">
+                        黑色背景配白色文字，对比度最高，适合状态栏等小文字。
+                    </div>
+                </div>
+                
+                <div class="text-sample" style="background: #1a001a; color: #f0f0f0;">
+                    <div class="sample-title" style="color: #ff69b4;">深紫底浅灰字</div>
+                    <div class="sample-content">
+                        深紫色背景配浅灰色文字，减少刺眼感同时保持可读性。
+                    </div>
+                </div>
+                
+                <div class="text-sample">
+                    <div class="sample-title">白底深灰字</div>
+                    <div class="sample-content">
+                        白色背景配深灰色文字，最适合阅读，用于主要内容区域。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 屏幕尺寸和断点检测
+        function updateDeviceInfo() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const indicator = document.getElementById('breakpointIndicator');
+            const screenWidth = document.getElementById('screenWidth');
+            const screenHeight = document.getElementById('screenHeight');
+            const currentBreakpoint = document.getElementById('currentBreakpoint');
+            
+            screenWidth.textContent = width;
+            screenHeight.textContent = height;
+            
+            // 移除所有断点类
+            indicator.classList.remove('mobile', 'tablet', 'desktop', 'large');
+            
+            if (width <= 480) {
+                indicator.textContent = '手机端 (≤480px)';
+                indicator.classList.add('mobile');
+                currentBreakpoint.textContent = '当前断点: 手机端';
+            } else if (width <= 768) {
+                indicator.textContent = '平板端 (≤768px)';
+                indicator.classList.add('tablet');
+                currentBreakpoint.textContent = '当前断点: 平板端';
+            } else if (width <= 1200) {
+                indicator.textContent = '桌面端 (≤1200px)';
+                indicator.classList.add('desktop');
+                currentBreakpoint.textContent = '当前断点: 桌面端';
+            } else {
+                indicator.textContent = '大屏幕 (>1200px)';
+                indicator.classList.add('large');
+                currentBreakpoint.textContent = '当前断点: 大屏幕';
+            }
+        }
+        
+        // 初始化
+        updateDeviceInfo();
+        
+        // 监听窗口大小变化
+        window.addEventListener('resize', updateDeviceInfo);
+        
+        // 按钮点击测试
+        document.querySelectorAll('.test-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const btnText = this.textContent;
+                alert(`点击了: ${btnText}\n当前文字大小: ${window.getComputedStyle(this).fontSize}`);
+            });
+        });
+        
+        // 输入框测试
+        const inputTest = document.querySelector('.input-test');
+        inputTest.addEventListener('input', function() {
+            console.log('输入框文字大小:', window.getComputedStyle(this).fontSize);
+        });
+    </script>
+</body>
+</html>

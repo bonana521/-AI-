@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>像素风琪琪助手 - 方案演示</title>
+    <style>
+        /* 像素字体导入 */
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #1a1a1a;
+            border: 4px solid #fff;
+            image-rendering: pixelated;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #00ff00;
+            text-shadow: 2px 2px 0px #008800;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 10px;
+            color: #ffff00;
+        }
+        
+        .schemes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .scheme {
+            border: 4px solid #fff;
+            background: #0f0f0f;
+            padding: 20px;
+            image-rendering: pixelated;
+        }
+        
+        .scheme h2 {
+            font-size: 16px;
+            color: #00ffff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .preview {
+            border: 2px solid #666;
+            background: #1a1a1a;
+            padding: 15px;
+            margin-bottom: 15px;
+            min-height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 方案一：经典8位游戏风格 */
+        .scheme-1 .preview {
+            background: linear-gradient(45deg, #2c1810 25%, #1a0f08 25%, #1a0f08 50%, #2c1810 50%, #2c1810 75%, #1a0f08 75%, #1a0f08);
+            background-size: 20px 20px;
+        }
+        
+        .scheme-1 .character {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 32px;
+            height: 32px;
+            background: #ff6b6b;
+            border: 2px solid #000;
+        }
+        
+        .scheme-1 .character::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 4px;
+            height: 4px;
+            background: #000;
+        }
+        
+        .scheme-1 .character::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 4px;
+            height: 4px;
+            background: #000;
+        }
+        
+        .scheme-1 .chat-bubble {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            padding: 8px;
+            font-size: 8px;
+            max-width: 120px;
+        }
+        
+        .scheme-1 .chat-bubble::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 10px;
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-right: 8px solid #000;
+        }
+        
+        /* 方案二：现代像素艺术风格 */
+        .scheme-2 .preview {
+            background: linear-gradient(135deg, #1a0033 0%, #330066 100%);
+        }
+        
+        .scheme-2 .character {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 48px;
+            height: 48px;
+            background: #ff69b4;
+            border: 2px solid #fff;
+            box-shadow: 
+                0 0 0 2px #000,
+                4px 4px 0px #000;
+        }
+        
+        .scheme-2 .character::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 6px;
+            height: 6px;
+            background: #000;
+            box-shadow: 18px 0 0 #000;
+        }
+        
+        .scheme-2 .chat-bubble {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+            color: #fff;
+            border: 3px solid #fff;
+            padding: 12px;
+            font-size: 10px;
+            max-width: 140px;
+            box-shadow: 
+                0 0 0 3px #000,
+                6px 6px 0px #000;
+        }
+        
+        .scheme-2 .particles {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 20px;
+        }
+        
+        .scheme-2 .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffff00;
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        .scheme-2 .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .scheme-2 .particle:nth-child(2) { left: 30%; animation-delay: 0.5s; }
+        .scheme-2 .particle:nth-child(3) { left: 50%; animation-delay: 1s; }
+        .scheme-2 .particle:nth-child(4) { left: 70%; animation-delay: 1.5s; }
+        .scheme-2 .particle:nth-child(5) { left: 90%; animation-delay: 2s; }
+        
+        /* 方案三：可爱像素风风格 */
+        .scheme-3 .preview {
+            background: linear-gradient(45deg, #ffeaa7 25%, #fdcb6e 25%, #fdcb6e 50%, #ffeaa7 50%, #ffeaa7 75%, #fdcb6e 75%, #fdcb6e);
+            background-size: 16px 16px;
+        }
+        
+        .scheme-3 .character {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: #ff7675;
+            border: 2px solid #2d3436;
+            border-radius: 0;
+        }
+        
+        .scheme-3 .character::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 6px;
+            height: 6px;
+            background: #2d3436;
+            box-shadow: 14px 0 0 #2d3436;
+        }
+        
+        .scheme-3 .character::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 4px;
+            background: #2d3436;
+        }
+        
+        .scheme-3 .chat-bubble {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #fff;
+            color: #ff7675;
+            border: 2px solid #ff7675;
+            padding: 10px;
+            font-size: 9px;
+            max-width: 130px;
+            border-radius: 0;
+        }
+        
+        .scheme-3 .chat-bubble::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 15px;
+            width: 0;
+            height: 0;
+            border-top: 3px solid transparent;
+            border-bottom: 3px solid transparent;
+            border-right: 6px solid #ff7675;
+        }
+        
+        .scheme-3 .hearts {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 20px;
+        }
+        
+        .scheme-3 .heart {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ff7675;
+            animation: heartbeat 1s ease-in-out infinite;
+        }
+        
+        .scheme-3 .heart:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .scheme-3 .heart:nth-child(2) { left: 30%; animation-delay: 0.3s; }
+        .scheme-3 .heart:nth-child(3) { left: 50%; animation-delay: 0.6s; }
+        .scheme-3 .heart:nth-child(4) { left: 70%; animation-delay: 0.9s; }
+        .scheme-3 .heart:nth-child(5) { left: 90%; animation-delay: 1.2s; }
+        
+        .features {
+            margin-bottom: 15px;
+        }
+        
+        .features h3 {
+            font-size: 12px;
+            color: #ffff00;
+            margin-bottom: 8px;
+        }
+        
+        .features ul {
+            list-style: none;
+            font-size: 8px;
+            line-height: 1.6;
+        }
+        
+        .features li {
+            margin-bottom: 4px;
+            padding-left: 12px;
+            position: relative;
+        }
+        
+        .features li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #00ff00;
+        }
+        
+        .color-palette {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .color {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #fff;
+        }
+        
+        .scheme-1 .color:nth-child(1) { background: #2c1810; }
+        .scheme-1 .color:nth-child(2) { background: #ff6b6b; }
+        .scheme-1 .color:nth-child(3) { background: #4ecdc4; }
+        .scheme-1 .color:nth-child(4) { background: #ffe66d; }
+        
+        .scheme-2 .color:nth-child(1) { background: #1a0033; }
+        .scheme-2 .color:nth-child(2) { background: #ff69b4; }
+        .scheme-2 .color:nth-child(3) { background: #00ffff; }
+        .scheme-2 .color:nth-child(4) { background: #ffff00; }
+        
+        .scheme-3 .color:nth-child(1) { background: #ffeaa7; }
+        .scheme-3 .color:nth-child(2) { background: #ff7675; }
+        .scheme-3 .color:nth-child(3) { background: #fdcb6e; }
+        .scheme-3 .color:nth-child(4) { background: #fff; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .navigation {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .nav-btn {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            cursor: pointer;
+            margin: 0 10px;
+            border: 2px solid #fff;
+        }
+        
+        .nav-btn:hover {
+            background: #ffff00;
+            color: #000;
+        }
+        
+        @media (max-width: 768px) {
+            .schemes {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 18px;
+            }
+            
+            .scheme h2 {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 像素风琪琪助手设计方案</h1>
+            <p>选择你喜欢的像素风格，点击下方按钮查看完整效果</p>
+        </div>
+        
+        <div class="schemes">
+            <!-- 方案一：经典8位游戏风格 -->
+            <div class="scheme scheme-1">
+                <h2>🕹️ 方案一：经典8位游戏风格</h2>
+                <div class="color-palette">
+                    <div class="color"></div>
+                    <div class="color"></div>
+                    <div class="color"></div>
+                    <div class="color"></div>
+                </div>
+                <div class="preview">
+                    <div class="character"></div>
+                    <div class="chat-bubble">
+                        哼！才不是想你呢！
+                    </div>
+                </div>
+                <div class="features">
+                    <h3>特色功能：</h3>
+                    <ul>
+                        <li>经典8位色彩搭配</li>
+                        <li>像素化角色设计</li>
+                        <li>复古游戏界面</li>
+                        <li>点阵图案背景</li>
+                        <li>简单几何形状</li>
+                        <li>高对比度配色</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 方案二：现代像素艺术风格 -->
+            <div class="scheme scheme-2">
+                <h2>✨ 方案二：现代像素艺术风格</h2>
+                <div class="color-palette">
+                    <div class="color"></div>
+                    <div class="color"></div>
+                    <div class="color"></div>
+                    <div class="color"></div>
+                </div>
+                <div class="preview">
+                    <div class="character"></div>
+                    <div class="chat-bubble">
+                        哼！才不是特意想找你玩呢！
+                    </div>
+                    <div class="particles">
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                    </div>
+                </div>
+                <div class="features">
+                    <h3>特色功能：</h3>
+                    <ul>
+                        <li>现代像素艺术风格</li>
+                        <li>霓虹色彩效果</li>
+                        <li>发光边框设计</li>
+                        <li>动态粒子特效</li>
+                        <li>渐变背景</li>
+                        <li>阴影效果</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 方案三：可爱像素风风格 -->
+            <div class="scheme scheme-3">
+                <h2>🌸 方案三：可爱像素风风格</h2>
+                <div class="color-palette">
+                    <div class="color"></div>
+                    <div class="color"></div>
+                    <div class="color"></div>
+                    <div class="color"></div>
+                </div>
+                <div class="preview">
+                    <div class="character"></div>
+                    <div class="chat-bubble">
+                        哼！才不是想你呢！
+                    </div>
+                    <div class="hearts">
+                        <div class="heart"></div>
+                        <div class="heart"></div>
+                        <div class="heart"></div>
+                        <div class="heart"></div>
+                        <div class="heart"></div>
+                    </div>
+                </div>
+                <div class="features">
+                    <h3>特色功能：</h3>
+                    <ul>
+                        <li>温暖色调配色</li>
+                        <li>可爱像素角色</li>
+                        <li>爱心装饰元素</li>
+                        <li>柔和边框设计</li>
+                        <li>棋盘格背景</li>
+                        <li>活泼动画效果</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button class="nav-btn" onclick="alert('方案一演示：经典8位游戏风格')">查看方案一</button>
+            <button class="nav-btn" onclick="alert('方案二演示：现代像素艺术风格')">查看方案二</button>
+            <button class="nav-btn" onclick="alert('方案三演示：可爱像素风风格')">查看方案三</button>
+        </div>
+    </div>
+</body>
+</html>

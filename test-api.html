@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>琪琪助手 API 测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
+        }
+        .test-btn {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 240, 245, 0.8) 100%);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            border-radius: 20px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .test-btn:hover {
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
+        }
+        .result {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ffb6c1;
+            min-height: 100px;
+        }
+        .loading {
+            color: #ff69b4;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐱 琪琪助手 API 功能测试</h1>
+    
+    <div>
+        <button class="test-btn" onclick="testCatFact()">🐱 测试猫咪知识API</button>
+        <button class="test-btn" onclick="testCatImage()">🐱 测试猫咪图片API</button>
+        <button class="test-btn" onclick="testDogImage()">🐶 测试狗狗图片API</button>
+        <button class="test-btn" onclick="testTranslate()">🌐 测试翻译API</button>
+    </div>
+    
+    <div id="result" class="result">
+        点击上方按钮测试API功能...
+    </div>
+
+    <script>
+        const apis = {
+            catFact: "https://catfact.ninja/fact",
+            catImage: "https://api.thecatapi.com/v1/images/search?limit=1",
+            dogImage: "https://dog.ceo/api/breeds/image/random",
+            translate: "https://api.mymemory.translated.net/get"
+        };
+
+        function showResult(message) {
+            document.getElementById('result').innerHTML = message;
+        }
+
+        async function testCatFact() {
+            showResult('<div class="loading">琪琪正在查找猫咪知识... (｡･ω･｡)ﾉ♡</div>');
+            
+            try {
+                const response = await fetch(apis.catFact);
+                const data = await response.json();
+                
+                const fact = data.fact;
+                const translatedFact = await translateText(fact);
+                
+                showResult(`
+                    <h3>🐱 猫咪知识（仅显示中文）</h3>
+                    <p><strong>琪琪说：</strong>琪琪学到啦：${translatedFact}</p>
+                    <p><small><em>英文原文已隐藏，只显示中文翻译内容</em></small></p>
+                    <p><em>API调用成功！猫咪知识已翻译成中文~</em></p>
+                `);
+            } catch (error) {
+                showResult(`
+                    <h3>❌ 猫咪知识API测试失败</h3>
+                    <p>错误信息：${error.message}</p>
+                `);
+            }
+        }
+
+        async function testCatImage() {
+            showResult('<div class="loading">琪琪在找可爱的猫咪图片... (≧▽≦)ﾉ</div>');
+            
+            try {
+                const response = await fetch(apis.catImage);
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    const imageUrl = data[0].url;
+                    showResult(`
+                        <h3>🐱 猫咪图片（直接显示）</h3>
+                        <p><strong>琪琪说：</strong>琪琪找到了！快看这只可爱的猫咪~ 🐱</p>
+                        <div style="text-align: center; margin: 15px 0;">
+                            <img src="${imageUrl}" style="max-width: 200px; max-height: 200px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); cursor: pointer;" 
+                                 onclick="window.open('${imageUrl}', '_blank')" alt="可爱的猫咪">
+                        </div>
+                        <p><small><em>点击图片查看大图</em></small></p>
+                        <p><em>API调用成功！图片已直接显示在聊天界面中~</em></p>
+                    `);
+                } else {
+                    throw new Error('No cat image found');
+                }
+            } catch (error) {
+                showResult(`
+                    <h3>❌ 猫咪图片API测试失败</h3>
+                    <p>错误信息：${error.message}</p>
+                `);
+            }
+        }
+
+        async function testDogImage() {
+            showResult('<div class="loading">琪琪在找可爱的狗狗图片... (≧▽≦)ﾉ</div>');
+            
+            try {
+                const response = await fetch(apis.dogImage);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const imageUrl = data.message;
+                    showResult(`
+                        <h3>🐶 狗狗图片（直接显示）</h3>
+                        <p><strong>琪琪说：</strong>琪琪找到了！快看这只可爱的狗狗~ 🐶</p>
+                        <div style="text-align: center; margin: 15px 0;">
+                            <img src="${imageUrl}" style="max-width: 200px; max-height: 200px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); cursor: pointer;" 
+                                 onclick="window.open('${imageUrl}', '_blank')" alt="可爱的狗狗">
+                        </div>
+                        <p><small><em>点击图片查看大图</em></small></p>
+                        <p><em>API调用成功！图片已直接显示在聊天界面中~</em></p>
+                    `);
+                } else {
+                    throw new Error('Failed to get dog image');
+                }
+            } catch (error) {
+                showResult(`
+                    <h3>❌ 狗狗图片API测试失败</h3>
+                    <p>错误信息：${error.message}</p>
+                `);
+            }
+        }
+
+        async function testTranslate() {
+            showResult('<div class="loading">琪琪正在测试翻译功能... (｡･ω･｡)ﾉ♡</div>');
+            
+            try {
+                const testText = "Hello, how are you today?";
+                const translatedText = await translateText(testText);
+                
+                showResult(`
+                    <h3>🌐 翻译功能</h3>
+                    <p><strong>英文原文：</strong>${testText}</p>
+                    <p><strong>中文翻译：</strong>${translatedText}</p>
+                    <p><em>API调用成功！</em></p>
+                `);
+            } catch (error) {
+                showResult(`
+                    <h3>❌ 翻译API测试失败</h3>
+                    <p>错误信息：${error.message}</p>
+                `);
+            }
+        }
+
+        async function translateText(text, targetLang = 'zh') {
+            try {
+                const url = `${apis.translate}?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.responseData && data.responseData.translatedText) {
+                    return data.responseData.translatedText;
+                } else {
+                    return text;
+                }
+            } catch (error) {
+                console.error('Translation error:', error);
+                return text;
+            }
+        }
+    </script>
+</body>
+</html>
